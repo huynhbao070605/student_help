@@ -33,7 +33,10 @@ const config = {
     themeColor: "#FF8A7A",
     supabaseConfigured: Boolean(
       process.env.EXPO_PUBLIC_SUPABASE_URL && process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
-    )
+    ),
+    eas: {
+      projectId: "a87404aa-97bb-4de8-aca2-1f8fea2de2bd"
+    }
   },
   plugins: ["expo-router"]
 };
