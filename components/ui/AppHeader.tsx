@@ -18,7 +18,7 @@ export function AppHeader({ eyebrow, title, subtitle, right }: AppHeaderProps) {
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
       </View>
-      {right ? <View>{right}</View> : null}
+      {right ? <View style={styles.right}>{right}</View> : null}
     </View>
   );
 }
@@ -42,12 +42,15 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontSize: typography.title,
-    fontWeight: "900"
+    fontWeight: "900",
+    flexShrink: 1
   },
   subtitle: {
     color: colors.muted,
     fontSize: typography.body,
     lineHeight: 21
+  },
+  right: {
+    flexShrink: 0
   }
 });
-

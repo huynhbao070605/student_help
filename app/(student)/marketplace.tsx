@@ -50,6 +50,7 @@ export default function MarketplaceListScreen() {
   const [hasImageOnly, setHasImageOnly] = useState(false);
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [visibleLimit, setVisibleLimit] = useState(18);
 
   useEffect(() => {
     if (!supabase) return;
@@ -91,8 +92,9 @@ export default function MarketplaceListScreen() {
       .filter((post) => !verifiedOnly || post.verified)
       .filter((post) => post.status === "active")
       .filter((post) => [post.title, post.description, post.category, post.subjectTag, post.university, post.faculty, post.area, post.condition].join(" ").toLowerCase().includes(lower))
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  }, [hasImageOnly, posts, query, typeFilter, verifiedOnly]);
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+      .slice(0, visibleLimit);
+  }, [hasImageOnly, posts, query, typeFilter, verifiedOnly, visibleLimit]);
 
   function openCreate() {
     setEditing(null);
@@ -254,6 +256,9 @@ export default function MarketplaceListScreen() {
       })}
 
       <AppBottomSheet visible={filterOpen} title="Bộ lọc chợ đồ học" onClose={() => setFilterOpen(false)}>
+        {visiblePosts.length >= visibleLimit ? (
+          <AppButton title="Tai them bai" variant="secondary" onPress={() => setVisibleLimit((value) => value + 12)} />
+        ) : null}
         {filterLabels.map((label, index) => <AppBadge key={label} label={label} tone={index % 2 ? "sky" : "peach"} />)}
         <View style={styles.actions}>
           <AppButton title="Tất cả" variant={typeFilter === "all" ? "primary" : "secondary"} onPress={() => setTypeFilter("all")} />

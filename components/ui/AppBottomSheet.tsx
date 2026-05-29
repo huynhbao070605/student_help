@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     gap: spacing.lg,
     left: 0,
+    maxHeight: "86%",
     padding: spacing.lg,
     position: "absolute",
     right: 0,
@@ -64,6 +65,6 @@ const styles = StyleSheet.create({
   },
   body: {
     gap: spacing.md,
-    maxHeight: 520
+    paddingBottom: spacing.lg
   }
 });

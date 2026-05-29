@@ -30,12 +30,13 @@ const styles = StyleSheet.create({
   badge: {
     alignSelf: "flex-start",
     borderRadius: radius.pill,
+    maxWidth: "100%",
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs
   },
   text: {
     fontSize: typography.tiny,
-    fontWeight: "900"
+    fontWeight: "900",
+    flexShrink: 1
   }
 });
-

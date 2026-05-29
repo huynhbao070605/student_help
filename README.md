@@ -1,38 +1,83 @@
 # Student Help
 
-Student Help is an Android-first, mobile-first Expo React Native app for students around VNU-HCM, Thu Duc, and Di An.
+Student Help is an Android-first Expo React Native app for students around VNU-HCM, Thu Duc, and Di An. It supports student verification, ride matching, marketplace/borrow/lend, Lost and Found, safe chat, Food & Deals, services, alerts, quick links, vendor tools, and admin moderation.
 
-This scaffold is Prompt 1 scope only: app foundation, navigation shells, reusable mobile UI components, polished placeholder screens, environment variable pattern, and Supabase client structure. It does not implement backend schema, RLS, auth flows, chat, marketplace logic, ordering, payments, realtime GPS, or product features.
-Prompt 2 adds the Supabase backend foundation: migrations, RLS policies, storage buckets, seed foundation, mobile auth/session wiring, role guards, profile editing, avatar upload, student-card upload, and admin manual verification actions.
+## Prerequisites
 
-## Stack
+- Node.js LTS
+- npm, used as the fallback package manager in this workspace
+- Android Studio and an Android emulator, or an Android phone with Expo Go
+- Supabase CLI for migrations/seed work
+- EAS CLI for APK/AAB builds: `npx eas-cli --version`
 
-- Expo React Native
-- TypeScript
-- Expo Router
-- Supabase client shell
-- Supabase migrations and seed SQL
-- React Native StyleSheet-based design system
-- npm fallback for this scaffold because `pnpm` is not installed in the current environment
-
-## Setup
+## Install
 
 ```bash
 npm install
 ```
 
-Copy `.env.example` to `.env` and fill in Supabase values when a backend project exists.
+## Environment
+
+Create `.env` from `.env.example`:
 
 ```bash
-EXPO_PUBLIC_SUPABASE_URL=
-EXPO_PUBLIC_SUPABASE_ANON_KEY=
+EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=local-only-service-role-key
 ```
 
-## Run
+Only `EXPO_PUBLIC_*` values are for the mobile app. Keep `SUPABASE_SERVICE_ROLE_KEY` local and never commit it.
+
+## Supabase Setup
+
+Cloud/staging is preferred for real Android demos.
+
+```bash
+npx supabase login
+npx supabase link --project-ref <project-ref>
+npx supabase db push
+npx supabase db query --linked --file supabase/seed.sql
+npm run demo:auth
+```
+
+Local Supabase requires Docker Desktop:
+
+```bash
+npx supabase start
+npx supabase db reset
+```
+
+## Demo Accounts
+
+- Admin: `admin@studenthelp.local` / `admin123456`
+- Main verified student: `minhanh@studenthelp.local` / `student123456`
+- Pending student: `quanghuy@studenthelp.local` / `student123456`
+- Vendor: `0900000001` / `vendor123456`
+- Vendor: `0900000002` / `vendor123456`
+- Vendor: `0900000003` / `vendor123456`
+
+Vendor phone login maps to `{phone}@vendor.studenthelp.local`.
+
+## Run On Android
+
+Expo Go on phone:
 
 ```bash
 npm start
+```
+
+Then scan the QR code. Use the same Wi-Fi network, or switch Expo to tunnel if LAN is blocked.
+
+Android emulator:
+
+```bash
 npm run android
+```
+
+Bounded smoke check:
+
+```bash
+npx expo start --no-dev --minify --offline
 ```
 
 ## Checks
@@ -42,96 +87,66 @@ npm run typecheck
 npm run lint
 ```
 
-Expo start check:
+There is currently no root `test` script configured.
+
+## Android Release Readiness
+
+Configured in `app.config.ts`:
+
+- App name: `Student Help`
+- Android package: `com.studenthelp.app`
+- Version: `0.5.0`
+- Android versionCode: `5`
+- Icon: `assets/images/icon.png`
+- Adaptive icon: `assets/images/adaptive-icon.png`
+- Splash: `assets/images/splash.png`
+- Theme color: `#FF8A7A`
+- Android permissions: `[]`
+
+No background location, realtime GPS, payment, or delivery tracking permissions are requested.
+
+## EAS Builds
+
+Development APK:
 
 ```bash
-npx expo start --no-dev --minify
+npx eas-cli build --platform android --profile development
 ```
 
-## Android Config
-
-- App name: Student Help
-- Android package placeholder: `com.studenthelp.app`
-- Icon placeholders: `assets/images/icon.png`, `assets/images/adaptive-icon.png`
-- Splash placeholder: `assets/images/splash.png`
-- Permissions: none requested yet
-
-## Supabase Backend
-
-For customer demos on a real Android phone, prefer Supabase cloud/staging. A phone may not reliably reach a laptop localhost Supabase instance. Local Supabase is still useful for development.
-
-Migration files:
-
-- `supabase/migrations/202605290001_foundation_schema.sql`
-- `supabase/migrations/202605290002_rls_policies.sql`
-- `supabase/migrations/202605290003_storage_buckets.sql`
-
-Seed file:
-
-- `supabase/seed.sql`
-
-Important: `supabase/seed.sql` now seeds public reference/demo support data only. It must not insert directly into `auth.users` or `auth.identities`; hosted Supabase Auth owns those tables and direct inserts can create login failures such as `Database error querying schema`.
-
-Local development commands when Supabase CLI is installed:
+Preview APK for customer demos:
 
 ```bash
-supabase start
-supabase db reset
+npx eas-cli build --platform android --profile preview
 ```
 
-Cloud/staging commands when Supabase CLI is installed and authenticated:
+Production AAB:
 
 ```bash
-supabase login
-supabase link --project-ref <project-ref>
-supabase db push
+npx eas-cli build --platform android --profile production
 ```
 
-Prompt 2.5 verified that the linked cloud project has these migrations applied:
-
-- `202605290001_foundation_schema.sql`
-- `202605290002_rls_policies.sql`
-- `202605290003_storage_buckets.sql`
-
-Seed status: `supabase/seed.sql` was reapplied to the linked cloud/staging project before Prompt 2.8 verification and completed without visible errors.
-
-Seed command used:
+CI/non-interactive builds require:
 
 ```bash
-npx supabase db query --linked --file supabase/seed.sql
+EXPO_TOKEN=your-token
 ```
 
-Alternative for future reseeding: open the Supabase Dashboard SQL Editor for the staging/demo project, paste `supabase/seed.sql`, confirm it is not production, then run it once.
+Prompt 5 validation confirmed EAS CLI is available, but a remote preview APK build cannot start in this environment until `eas login` is completed or `EXPO_TOKEN` is set.
 
-Do not put service role keys or database passwords in the mobile app.
+## Troubleshooting
 
-## Demo Auth Accounts
+- If Auth fails, rerun `npm run demo:auth` with a valid local `SUPABASE_SERVICE_ROLE_KEY`.
+- If Android phone cannot reach local services, use Supabase cloud/staging and Expo tunnel.
+- If image picking fails in Expo Go, verify media library permission prompt was accepted.
+- If Metro hangs, stop old Node processes or use a different port: `npx expo start --port 8082`.
+- If EAS asks for credentials, run `npx eas-cli login` or set `EXPO_TOKEN`.
 
-Demo login accounts are created/repaired through the Supabase Auth Admin API with a local service-role-only script:
+## Product Boundaries
 
-```bash
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-npm run demo:auth
-```
-
-The script reads `SUPABASE_URL` or `EXPO_PUBLIC_SUPABASE_URL`, `SUPABASE_ANON_KEY` or `EXPO_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` from local environment values. Do not commit the service role key and do not expose it through `EXPO_PUBLIC_*`.
-
-Demo credentials:
-
-- Admin: `admin@studenthelp.local` / `StudentHelp123!`
-- Student: `minhanh@studenthelp.local` / `StudentHelp123!`
-- Student: `quanghuy@studenthelp.local` / `StudentHelp123!`
-- Vendor phone login: `0900000201` / `VendorDemo123!`
-- Vendor phone login: `0900000202` / `VendorDemo123!`
-
-Vendor phone login maps to internal email format: `{phone}@vendor.studenthelp.local`.
-
-Database types were generated from the linked project:
-
-- `lib/supabase/database.types.ts`
-
-Prompt 2.8 status: demo Auth repair passed. `npm run demo:auth` verified the admin account, both student accounts, and both vendor accounts. Prompt 3 can proceed; keep real Android device login and role-routing smoke checks in the demo QA path.
-
-## Project Rules
-
-Before coding, read `AGENTS.md` and `docs/CONTEXT_BOOTSTRAP.md`. Obey `docs/DECISIONS.md`, keep scope tight, and update project memory after every prompt.
+- Student card verification is manual admin review only.
+- AI/OCR cannot approve student cards.
+- No realtime GPS.
+- No payment.
+- No real order management.
+- No delivery tracking.
+- Food ordering is manual through chat.

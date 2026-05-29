@@ -51,11 +51,12 @@ const styles = StyleSheet.create({
   },
   text: {
     color: colors.ink,
+    flexShrink: 1,
     fontSize: typography.body,
-    fontWeight: "800"
+    fontWeight: "800",
+    textAlign: "center"
   },
   ghostText: {
     color: colors.peachDark
   }
 });
-

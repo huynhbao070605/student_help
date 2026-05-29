@@ -92,14 +92,14 @@
 - [x] Campus Quick Links.
 - [x] Reputation score and badges.
 - [x] Friendly empty states.
-- [ ] Vietnamese copy polish.
+- [x] Vietnamese copy polish.
 - [ ] Android device QA.
 
 ## Phase 7: Release Readiness
 
-- [ ] EAS Build setup.
+- [x] EAS Build setup.
 - [ ] Preview APK build.
-- [ ] Production AAB profile.
-- [ ] Demo guide completion.
-- [ ] Known limitations review.
+- [x] Production AAB profile.
+- [x] Demo guide completion.
+- [x] Known limitations review.
 - [ ] Customer demo rehearsal.

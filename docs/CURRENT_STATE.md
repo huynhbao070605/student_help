@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 4: Vendor/admin features and full demo data implemented.
+Phase 5: Final QA polish and Android release readiness implemented.
 
 ## Completed Features
 
@@ -44,6 +44,10 @@ Phase 4: Vendor/admin features and full demo data implemented.
 - Prompt 4 implemented admin overview stats, verification queue visibility, user/vendor management, create/reset/suspend vendor account demo controls, reports, blocks, moderation, app settings, AI/OCR settings display, community alerts CRUD, quick links CRUD, and services CRUD.
 - Prompt 4 expanded demo Auth repair to 1 admin, 12 students, and 6 phone-style vendor accounts with the requested credentials.
 - Prompt 4 expanded seed/app demo data for vendors, menus, vendor posts, services, alerts, quick links, rides, marketplace, Lost and Found, saved searches, conversations, phone request states, reports, blocks, reputation events, and badges.
+- Prompt 5 polished shared mobile UI foundations for keyboard-safe forms, bottom sheet height, button/badge text wrapping, quick action card wrapping, loading skeletons, and small Android screen resilience.
+- Prompt 5 added Android release readiness config with version `0.5.0`, Android versionCode `5`, runtimeVersion policy, empty Android permissions, and `eas.json` profiles for development APK, preview APK, and production AAB.
+- Prompt 5 updated README and demo guide with prerequisites, env setup, Supabase reset, Android run commands, EAS build commands, troubleshooting, demo script, and known limitations.
+- Prompt 5 ran final QA command checks and documented EAS build blocker: Expo login or `EXPO_TOKEN` is required before remote APK/AAB builds.
 - Mobile auth/session provider, vendor phone-style login mapping, role guards, logout, profile update, avatar upload, student-card upload, and admin verification approve/reject hooks created.
 - Android app config, placeholder icon, adaptive icon, and splash assets created.
 - Backend foundation exists as migrations/seed and app integration hooks; full product flows are not implemented yet.
@@ -62,7 +66,7 @@ Phase 4: Vendor/admin features and full demo data implemented.
 - Full manual student verification workflow polish beyond profile upload/status.
 - Production-grade realtime chat subscriptions.
 - Native OCR integration.
-- Android APK/AAB build setup.
+- Preview APK build execution on EAS cloud.
 
 ## Last Successful Checks
 
@@ -120,6 +124,12 @@ Phase 4: Vendor/admin features and full demo data implemented.
 - Prompt 4 `npm run lint` passed.
 - Prompt 4 found no configured root project test script in `package.json`.
 - Prompt 4 Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned Metro process was stopped afterward.
+- Prompt 5 `npm run typecheck` passed.
+- Prompt 5 `npm run lint` passed.
+- Prompt 5 `npx expo config --type public` passed and resolved app name, Android package, version, versionCode, icons, splash, runtimeVersion, and empty Android permissions.
+- Prompt 5 `npx eas-cli --version` passed after network approval and returned `eas-cli/20.0.0`.
+- Prompt 5 `npx eas-cli config --profile preview --platform android` and `npx eas-cli build --platform android --profile preview --non-interactive --no-wait` were blocked by missing Expo login or `EXPO_TOKEN`.
+- Prompt 5 Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned Metro process was stopped afterward.
 
 ## Known Issues
 
@@ -133,8 +143,10 @@ Phase 4: Vendor/admin features and full demo data implemented.
 - Some richer filters are UI/client-side because the current Prompt 2 schema does not have dedicated columns for every requested filter dimension.
 - Dev server logs are written to `.expo/dev-server.out.log` and `.expo/dev-server.err.log`.
 - Background Expo dev server may exit after hidden `Start-Process` launch in this environment; use `npm start` in a visible terminal for an interactive demo session if needed.
-- There is no `.git` directory in this workspace, so changed-file proof is based on the build journal and filesystem state rather than `git diff`.
+- Real Android device QA still needs to be performed outside this workspace.
+- EAS preview APK/AAB cloud builds need Expo login or `EXPO_TOKEN`.
+- Placeholder app icon and splash should be replaced before Play Store submission.
 
 ## Next Recommended Task
 
-Proceed to Prompt 5 final QA/release tasks only when ready. Before customer demo, run real Android login, role routing, profile loading, food/vendor/admin flows, image upload, chat, and logout smoke checks.
+Run real Android device QA and then start EAS preview APK build after `eas login` or `EXPO_TOKEN` is available.

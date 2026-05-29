@@ -45,6 +45,7 @@ export default function LostFoundListScreen() {
   const [typeFilter, setTypeFilter] = useState<"all" | LostFoundPost["postType"]>("all");
   const [savedSearches, setSavedSearches] = useState(demoSavedSearches);
   const [message, setMessage] = useState<string | null>(null);
+  const [visibleLimit, setVisibleLimit] = useState(18);
 
   useEffect(() => {
     if (!supabase) return;
@@ -81,8 +82,9 @@ export default function LostFoundListScreen() {
   const visiblePosts = useMemo(() => {
     return smartFilterLostFound(posts, query)
       .filter(({ post }) => typeFilter === "all" || post.postType === typeFilter)
-      .filter(({ post }) => post.status === "active" || post.status === "closed");
-  }, [posts, query, typeFilter]);
+      .filter(({ post }) => post.status === "active" || post.status === "closed")
+      .slice(0, visibleLimit);
+  }, [posts, query, typeFilter, visibleLimit]);
 
   const privacyRisk = useMemo(() => analyzePrivacyText(`${form.title} ${form.description} ${form.privacyText}`), [form.description, form.privacyText, form.title]);
 
@@ -268,6 +270,9 @@ export default function LostFoundListScreen() {
       })}
 
       <AppBottomSheet visible={filterOpen} title="Bộ lọc Tìm đồ" onClose={() => setFilterOpen(false)}>
+        {visiblePosts.length >= visibleLimit ? (
+          <AppButton title="Tai them ket qua" variant="secondary" onPress={() => setVisibleLimit((value) => value + 12)} />
+        ) : null}
         {filterLabels.map((label, index) => <AppBadge key={label} label={label} tone={index % 2 ? "sky" : "peach"} />)}
         <View style={styles.actions}>
           <AppButton title="Tất cả" variant={typeFilter === "all" ? "primary" : "secondary"} onPress={() => setTypeFilter("all")} />

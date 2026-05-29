@@ -1,5 +1,7 @@
 import { PropsWithChildren } from "react";
 import {
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -22,13 +24,19 @@ export function AppScreen({ children, scroll = true, style, contentStyle }: AppS
   return (
     <SafeAreaView style={[styles.safe, style]}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-      {scroll ? (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {content}
-        </ScrollView>
-      ) : (
-        content
-      )}
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.keyboard}>
+        {scroll ? (
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {content}
+          </ScrollView>
+        ) : (
+          content
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -37,6 +45,9 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: colors.background
+  },
+  keyboard: {
+    flex: 1
   },
   scrollContent: {
     flexGrow: 1
@@ -48,4 +59,3 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl
   }
 });
-

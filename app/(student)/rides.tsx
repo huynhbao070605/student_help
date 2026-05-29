@@ -47,6 +47,7 @@ export default function RideListScreen() {
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [openOnly, setOpenOnly] = useState(true);
   const [minRep, setMinRep] = useState("0");
+  const [visibleLimit, setVisibleLimit] = useState(16);
 
   useEffect(() => {
     if (!supabase) return;
@@ -88,8 +89,9 @@ export default function RideListScreen() {
       .filter((ride) => !verifiedOnly || ride.verified)
       .filter((ride) => ride.reputation >= Number(minRep || 0))
       .filter((ride) => [ride.origin, ride.destination, ride.area, ride.campus, ride.transportType, ride.locationNote].join(" ").toLowerCase().includes(lower))
-      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  }, [minRep, openOnly, query, rides, verifiedOnly]);
+      .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+      .slice(0, visibleLimit);
+  }, [minRep, openOnly, query, rides, verifiedOnly, visibleLimit]);
 
   function openCreate() {
     setEditing(null);
@@ -249,6 +251,9 @@ export default function RideListScreen() {
       })}
 
       <AppBottomSheet visible={filterOpen} title="Bộ lọc đi chung" onClose={() => setFilterOpen(false)}>
+        {visibleRides.length >= visibleLimit ? (
+          <AppButton title="Tai them tuyen" variant="secondary" onPress={() => setVisibleLimit((value) => value + 12)} />
+        ) : null}
         {filterLabels.map((label, index) => <AppBadge key={label} label={label} tone={index % 3 === 0 ? "peach" : index % 3 === 1 ? "sky" : "mint"} />)}
         <AppInput label="Uy tín tối thiểu" value={minRep} onChangeText={setMinRep} keyboardType="number-pad" />
         <AppButton title={verifiedOnly ? "Đang lọc: đã xác minh" : "Chỉ người đã xác minh"} variant="secondary" onPress={() => setVerifiedOnly((value) => !value)} />

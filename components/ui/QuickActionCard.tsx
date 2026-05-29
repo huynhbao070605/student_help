@@ -41,8 +41,10 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     flex: 1,
+    flexBasis: "46%",
     gap: spacing.sm,
     minHeight: 132,
+    minWidth: 148,
     padding: spacing.md,
     ...shadows.card
   },
@@ -61,12 +63,13 @@ const styles = StyleSheet.create({
   title: {
     color: colors.ink,
     fontSize: typography.body,
-    fontWeight: "900"
+    fontWeight: "900",
+    flexShrink: 1
   },
   subtitle: {
     color: colors.muted,
     fontSize: typography.small,
+    flexShrink: 1,
     lineHeight: 18
   }
 });
-

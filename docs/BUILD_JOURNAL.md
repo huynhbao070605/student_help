@@ -723,3 +723,78 @@ This file is append-only. Every prompt must append a new entry.
   - OCR remains rule-based and Expo-safe; no native OCR module was added.
   - Real Android device QA is still pending.
 - Next step: Prompt 5 final QA/release work when requested.
+
+## Prompt 5 Final QA And Release Readiness
+
+- Date: 2026-05-29
+- User request summary: Execute Prompt 5 only: final QA, UI polish, Android release readiness, EAS config, demo rehearsal documentation, and known limitations. Do not add major new product features.
+- Scope: Shared mobile UI polish, Android/EAS readiness config, documentation, and command verification. No new product modules, payment, realtime GPS, delivery tracking, or order management were added.
+- Files changed:
+  - `README.md`
+  - `app.config.ts`
+  - `eas.json`
+  - `package.json`
+  - `package-lock.json`
+  - `components/ui/AppScreen.tsx`
+  - `components/ui/AppButton.tsx`
+  - `components/ui/AppBadge.tsx`
+  - `components/ui/AppHeader.tsx`
+  - `components/ui/AppBottomSheet.tsx`
+  - `components/ui/AppLoadingState.tsx`
+  - `components/ui/QuickActionCard.tsx`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/lost-found.tsx`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content -Path docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content -Path .cursor\skills\student-help-mobile-qa\SKILL.md`
+  - `Get-Content -Path .cursor\skills\student-help-mobile-ui-polisher\SKILL.md`
+  - `Get-Content -Path docs\PRD.md`
+  - `Get-Content -Path docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content -Path docs\DECISIONS.md`
+  - `Get-Content -Path docs\CURRENT_STATE.md`
+  - `Get-Content -Path docs\TODO.md`
+  - `Get-Content -Path docs\DEMO_GUIDE.md`
+  - `Get-Content -Path docs\UI_STYLE_GUIDE.md`
+  - `Get-Content -Path .cursor\rules\030-mobile-ui-style.mdc`
+  - `Get-Content -Path .cursor\rules\050-testing-debugging.mdc`
+  - `Get-Content -Path .cursor\rules\070-android-release-readiness.mdc`
+  - `Get-Content -Path app.config.ts`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+  - `npx eas-cli --version`
+  - `npx eas-cli config --profile preview --platform android`
+  - `npx eas-cli build --platform android --profile preview --non-interactive --no-wait`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - `npx.cmd expo start --no-dev --minify --offline --port 8082`
+  - `git status --short`
+- Result:
+  - Shared screen container is keyboard-aware and keeps taps working while forms are open.
+  - Buttons, badges, headers, quick action cards, and bottom sheets are more resilient on small Android screens.
+  - Loading state now includes lightweight skeleton bars.
+  - Long student lists now cap initial visible results to reduce demo-screen render load, with load-more actions available from filter sheets.
+  - Android app version updated to `0.5.0`; Android versionCode set to `5`; runtimeVersion uses appVersion policy.
+  - Android permissions remain empty: `[]`.
+  - `eas.json` added with development APK, preview APK, and production AAB profiles.
+  - README and demo guide now include prerequisites, install, env setup, Supabase setup/reset, Android phone/emulator commands, Expo start, EAS build commands, troubleshooting, exact demo accounts, 7-minute demo script, QA checklist, and known limitations.
+- Checks:
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - `npx expo config --type public` passed and resolved app name `Student Help`, package `com.studenthelp.app`, version `0.5.0`, versionCode `5`, icons, splash, runtimeVersion, and Android `permissions: []`.
+  - `npx eas-cli --version` initially needed network approval, then passed with `eas-cli/20.0.0 win32-x64 node-v22.19.0`.
+  - `npx eas-cli config --profile preview --platform android` was blocked by missing Expo account login or `EXPO_TOKEN`.
+  - `npx eas-cli build --platform android --profile preview --non-interactive --no-wait` was blocked by missing Expo account login or `EXPO_TOKEN`; no APK build was started.
+  - Expo smoke check returned `Metro status: packager-status:running` on port `8082`; the spawned process was stopped and a follow-up status check returned `not running`.
+- Known issues:
+  - Real Android device QA is still pending outside this workspace.
+  - Preview APK and production AAB cloud builds require `npx eas-cli login` or `EXPO_TOKEN`.
+  - App icon and splash are placeholders and should be replaced before Play Store submission.
+  - OCR remains rule-based and Expo-safe; native OCR is not included.
+  - Production realtime chat subscriptions remain deferred.
+- Next step: Run real Android device QA, then run the EAS preview APK build after Expo credentials are available.
