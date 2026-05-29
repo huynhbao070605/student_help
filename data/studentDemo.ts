@@ -9,6 +9,165 @@ export type DemoProfile = {
   lastActiveAt: string;
 };
 
+function hydrateStudentDemoData() {
+const rideTemplates = [
+  ["KTX Khu A", "UIT", "Xe may", "Sang thu 2-6"],
+  ["KTX Khu B", "HCMUS", "Xe may", "7:00 hang ngay"],
+  ["Di An Center", "HCMUT", "Bus", "Chieu tan hoc"],
+  ["Linh Trung", "UEL", "Xe dap", "Toi thu 3"],
+  ["Nha van hoa Sinh vien", "KTX Khu B", "Di bo", "Sau su kien"],
+  ["Suoi Tien", "KTX Khu A", "Bus", "Cuoi tuan"],
+  ["Thu Duc", "UIT", "Xe may", "Ca hoc 9:00"],
+  ["KTX Khu B", "Thu vien Trung tam", "Di bo", "Nhom on thi"],
+  ["Di An", "Nha van hoa Sinh vien", "Xe may", "18:30"],
+  ["KTX Khu A", "HCMUT", "Bus + di bo", "Sang mai"],
+  ["Linh Trung", "HCMUS", "Xe may", "Mua nhe van di"],
+  ["KTX Khu B", "UEL", "Xe may", "Con 1 cho"],
+  ["Suoi Tien", "UIT", "Bus", "Tuyen 53"]
+];
+
+demoRides.push(
+  ...rideTemplates.map((item, index) => ({
+    id: `ride-extra-${index + 1}`,
+    ownerId: `demo-student-${index + 3}`,
+    ownerName: ["Gia Linh", "Bao Ngoc", "Tuan Anh", "Ha Mi", "Nam Phuc", "Linh Chi"][index % 6],
+    origin: item[0],
+    destination: item[1],
+    campus: "VNU-HCM",
+    area: index % 3 === 0 ? "KTX A" : index % 3 === 1 ? "KTX B" : "Di An",
+    departAt: `2026-05-${29 + (index % 2)}T0${7 + (index % 3)}:15:00+07:00`,
+    scheduleNote: item[3],
+    transportType: item[2],
+    roleType: index % 2 === 0 ? "Tim ban di cung" : "Co the cho 1 ban",
+    genderPreference: index % 4 === 0 ? "Ban nu" : "Khong yeu cau",
+    seatsAvailable: 1,
+    safetyNote: "Chi hen diem cong cong, xac nhan qua chat.",
+    locationNote: "Gap o cong chinh hoac tram bus gan nhat.",
+    verified: index % 5 !== 0,
+    reputation: 45 + index * 4,
+    status: "active",
+    createdAt: `2026-05-2${index % 9}T10:00:00Z`
+  })) as RidePost[]
+);
+
+const marketplaceTitles = [
+  "Tai nghe trang con tot",
+  "Binh nuoc xanh 700ml",
+  "Ao lab HCMUS size M",
+  "Giao trinh Giai tich 1",
+  "Laptop stand gap gon",
+  "Muon may tinh Casio cuoi tuan",
+  "Cho muon sach Cau truc du lieu",
+  "Doi balo den lay balo nho",
+  "Ban den ban hoc KTX",
+  "Bo but highlight pastel",
+  "Free giay A4 con du",
+  "Ban chuot khong day",
+  "Muon ao dai chup ky yeu",
+  "Pass ve workshop UIT",
+  "Sach tieng Anh B1",
+  "Bang ve mini",
+  "Ban o cam dien KTX",
+  "Trao doi flashcard TOEIC",
+  "Cho muon du di mua",
+  "Ban balo laptop",
+  "Free ke sach nhua",
+  "Muon tripod quay bai",
+  "Ban keyboard co mini"
+];
+
+demoMarketplace.push(
+  ...marketplaceTitles.map((title, index) => ({
+    id: `market-extra-${index + 1}`,
+    ownerId: `demo-student-${(index % 12) + 1}`,
+    ownerName: ["Minh Anh", "Quang Huy", "Gia Linh", "Bao Ngoc", "Ha Mi", "Nam Phuc"][index % 6],
+    listingType: (["sell", "exchange", "free", "borrow", "lend"] as const)[index % 5],
+    title,
+    description: `${title} - demo quanh VNU-HCM, hen nhan o KTX hoac thu vien.`,
+    category: ["Sach", "Do hoc", "Dien tu", "Do KTX", "Ve su kien"][index % 5],
+    subjectTag: ["Toan", "CNTT", "Anh van", "Vat ly", "Do an"][index % 5],
+    university: ["UIT", "HCMUT", "HCMUS", "UEL"][index % 4],
+    faculty: ["CNTT", "Kinh te", "Co khi", "Khoa hoc"][index % 4],
+    area: ["KTX A", "KTX B", "Di An", "Lang Dai hoc"][index % 4],
+    condition: ["Tot", "Kha", "Moi", "Can xem truoc"][index % 4],
+    priceVnd: index % 5 === 2 || index % 5 === 3 || index % 5 === 4 ? null : 15000 + index * 12000,
+    imagePaths: index % 3 === 0 ? [`market-${index + 1}.jpg`] : [],
+    verified: index % 4 !== 0,
+    reputation: 35 + index * 3,
+    status: "active",
+    createdAt: `2026-05-${10 + (index % 18)}T09:00:00Z`
+  })) as MarketplacePost[]
+);
+
+const lostFoundSeeds = [
+  ["found", "vi nau gan KTX B", "Vi mau nau nhat gan KTX B, da che thong tin rieng tu.", "Vi/bop", "Nau", "Khong ro", "Cong KTX B"],
+  ["lost", "tai nghe trang thu vien", "Tai nghe trang quen o thu vien trung tam.", "Tai nghe", "Trang", "AirPods", "Thu vien Trung tam"],
+  ["found", "the sinh vien UIT", "Nhat duoc the sinh vien UIT, can admin review vi co the co MSSV.", "The", "Xanh", "UIT", "Cong UIT"],
+  ["lost", "binh nuoc xanh", "Binh nuoc xanh co sticker o nha van hoa sinh vien.", "Binh nuoc", "Xanh", "LocknLock", "Nha van hoa Sinh vien"]
+];
+
+const moreLostFound = Array.from({ length: 24 }, (_, index) => {
+  const types = ["lost", "found"] as const;
+  const categories = ["Chia khoa", "Sach", "O/du", "Vi/bop", "Tai nghe", "Binh nuoc"];
+  return [
+    types[index % 2],
+    `${types[index % 2] === "lost" ? "Mat" : "Nhat duoc"} ${categories[index % categories.length]} demo ${index + 1}`,
+    "Thong tin mo ta da tranh so dien thoai, CCCD va dia chi rieng.",
+    categories[index % categories.length],
+    ["Den", "Trang", "Xanh", "Nau"][index % 4],
+    ["Khong ro", "Deli", "Casio", "Local"][index % 4],
+    ["KTX A", "KTX B", "UIT", "HCMUS", "Di An"][index % 5]
+  ];
+});
+
+demoLostFound.push(
+  ...[...lostFoundSeeds, ...moreLostFound].map((row, index) => ({
+    id: `lf-extra-${index + 1}`,
+    ownerId: `demo-student-${(index % 12) + 1}`,
+    ownerName: ["Minh Anh", "Quang Huy", "Gia Linh", "Bao Ngoc", "Ha Mi", "Nam Phuc"][index % 6],
+    postType: row[0] as "lost" | "found",
+    title: row[1],
+    description: row[2],
+    category: row[3],
+    color: row[4],
+    brand: row[5],
+    locationText: row[6],
+    eventAt: `2026-05-${12 + (index % 17)}T12:00:00+07:00`,
+    imagePaths: index % 4 === 0 ? [`lost-found-${index + 1}.jpg`] : [],
+    privacyReviewStatus: (["auto_pass", "admin_review", "approved", "auto_rejected"] as const)[index % 4],
+    ocrRiskScore: [0, 38, 8, 88][index % 4],
+    ocrEvidence: index % 4 === 3 ? "Strong evidence: visible phone-like number in image." : "Demo OCR/rule score.",
+    status: "active",
+    returned: index % 9 === 0,
+    createdAt: `2026-05-${12 + (index % 17)}T07:00:00Z`
+  })) as LostFoundPost[]
+);
+
+demoSavedSearches.push(
+  { id: "saved-3", name: "The sinh vien UIT", criteria: "the sinh vien UIT MSSV admin review" },
+  { id: "saved-4", name: "Binh nuoc xanh", criteria: "binh nuoc xanh sticker nha van hoa" }
+);
+
+demoChats.push(
+  ...Array.from({ length: 10 }, (_, index) => ({
+    id: `chat-extra-${index + 1}`,
+    title: ["Di chung KTX", "Pass sach", "Lost and Found", "Order do an", "Dich vu in an"][index % 5],
+    context: (["ride", "marketplace", "lost_found", "food_order", "service"] as const)[index % 5],
+    participantName: ["Gia Linh", "Bao Ngoc", "Com Tam Co Ba", "In an KTX B", "Tra Sua May Nho"][index % 5],
+    participantRole: index % 5 === 3 || index % 5 === 4 ? "vendor" : "student",
+    participantReputation: 60 + index * 3,
+    lastMessage: "Tin nhan demo co du trang thai pending/approved/declined cho xin so dien thoai.",
+    unread: index % 2 === 0,
+    phoneRequestStatus: (["none", "pending", "approved", "rejected"] as const)[index % 4],
+    phone: index % 4 === 2 ? `09000001${index}` : undefined,
+    messages: [
+      { id: `chat-extra-${index + 1}-m1`, sender: "them", body: "Ban con can ho tro khong?", createdAt: "08:10" },
+      { id: `chat-extra-${index + 1}-m2`, sender: "me", body: "Minh xac nhan qua chat truoc nha.", createdAt: "08:12" }
+    ]
+  })) as ChatPreview[]
+);
+}
+
 export type RidePost = {
   id: string;
   ownerId: string;
@@ -293,3 +452,5 @@ export const quickMessages = {
   service: ["Dịch vụ còn nhận hôm nay không ạ?", "Cho em xin giá sinh viên với.", "Mình hẹn ở đâu tiện nhất?"],
   general: ["Cảm ơn bạn nhiều nha!", "Mình xác nhận lại chút nhé.", "Bạn nhắn mình khi tới nơi nha."]
 };
+
+hydrateStudentDemoData();

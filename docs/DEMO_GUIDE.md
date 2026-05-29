@@ -1,147 +1,56 @@
 # Demo Guide
 
-## Install Prerequisites
-
-Placeholder until the Expo app is scaffolded.
-
-Expected tools:
-
-- Node.js LTS
-- pnpm preferred, npm fallback currently used because pnpm is not installed in this environment
-- Expo CLI through project scripts
-- Android Studio and Android emulator
-- Expo Go or development build, depending on native module needs
-- EAS CLI for APK/AAB builds
-
-## Run App On Android Device
-
-Placeholder:
+## Run App
 
 ```bash
 npm install
 npm start
 ```
 
-Then scan the QR code with Expo Go or install the development build when configured.
-
-## Run App On Android Emulator
-
-Placeholder:
-
-```bash
-npm install
-npm run android
-```
+Use Expo Go on Android or an Android emulator. For cloud demo data, keep `.env` pointed at the linked Supabase project.
 
 ## Demo Accounts
 
-Demo accounts are created or repaired through the Supabase Auth Admin API, not by direct SQL inserts into `auth.users`.
-
-Local setup for the repair script:
-
-```bash
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-npm run demo:auth
-```
-
-The script also needs `SUPABASE_URL` or `EXPO_PUBLIC_SUPABASE_URL`, plus `SUPABASE_ANON_KEY` or `EXPO_PUBLIC_SUPABASE_ANON_KEY`. Keep the service role key local only.
-
-Accounts:
-
-- Admin: `admin@studenthelp.local` / `StudentHelp123!`
-- Student verified: `minhanh@studenthelp.local` / `StudentHelp123!`
-- Student pending verification: `quanghuy@studenthelp.local` / `StudentHelp123!`
-- Vendor restaurant phone login: `0900000201` / `VendorDemo123!`
-- Vendor drink shop phone login: `0900000202` / `VendorDemo123!`
-
-Vendor phone login maps to `{phone}@vendor.studenthelp.local` internally.
-
-Prompt 2.8 auth status: demo Auth repair passed. `npm run demo:auth` verified the admin account, both student accounts, and both vendor accounts.
-
-Verification checklist:
-
-- Admin email login reaches the admin area and loads the admin profile.
-- Student email login reaches the student tabs and loads the profile.
-- Vendor phone login maps to `{phone}@vendor.studenthelp.local`, reaches the vendor area, and loads the vendor profile.
-- Logout clears the session and returns to auth screens.
-
-## Backend For Real Android Demo
-
-Prefer Supabase cloud/staging for customer demos on a real Android phone. A phone may not reliably reach laptop localhost.
-
-Local development commands when Supabase CLI is installed:
-
-```bash
-supabase start
-supabase db reset
-```
-
-Cloud/staging commands when Supabase CLI is installed:
-
-```bash
-supabase login
-supabase link --project-ref <project-ref>
-supabase db push
-```
-
-Prompt 2.5 verified these remote migrations are applied:
-
-- `202605290001`
-- `202605290002`
-- `202605290003`
-
-Seed status: reapplied to the linked cloud/staging project before Prompt 2.8 verification and completed without visible errors.
-
-Seed command used:
+Run public seed first, then repair Auth users:
 
 ```bash
 npx supabase db query --linked --file supabase/seed.sql
+npm run demo:auth
 ```
 
-SQL Editor method for future reseeding:
+Accounts verified by Prompt 4:
 
-1. Open the Supabase Dashboard for the staging/demo project.
-2. Go to SQL Editor.
-3. Paste `supabase/seed.sql`.
-4. Confirm it is the staging/demo project, not production.
-5. Run the SQL and then test the demo accounts.
+- Admin: `admin@studenthelp.local` / `admin123456`
+- Main verified student: `minhanh@studenthelp.local` / `student123456`
+- Pending student: `quanghuy@studenthelp.local` / `student123456`
+- Vendor: `0900000001` / `vendor123456`
+- Vendor: `0900000002` / `vendor123456`
+- Vendor: `0900000003` / `vendor123456`
 
-The SQL seed does not create Auth users. Use `npm run demo:auth` after reseeding public reference data.
+Vendor phone login maps to `{phone}@vendor.studenthelp.local` internally. Extra demo vendors `0900000004`, `0900000005`, and `0900000006` also use `vendor123456`.
 
-Set the mobile app environment:
+## Exact Demo Data
 
-```bash
-EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
+- 12 student Auth accounts plus 1 admin and 6 vendor Auth accounts.
+- 6 food vendors with opening status, tags, fake distances, menu images, structured menu items, item availability, item tags, and item options.
+- 15 ride posts, 25 marketplace/borrow/lend posts, 30 Lost and Found posts, saved searches, 12 conversations, phone request states, reports, blocks, reputation and badges.
+- Services directory data for printing, laundry, bike repair, laptop repair, tutoring, and campus support.
+- Community alerts and Campus Quick Links seeded in SQL and mirrored in app demo data.
+- Search demos: `ví nâu gần KTX B`, `tai nghe trắng thư viện`, `thẻ sinh viên UIT`, `bình nước xanh`.
 
-Do not add service role keys or database passwords to `.env`.
+## 7-Minute Customer Demo
 
-## 7-Minute Customer Demo Script
-
-1. Open Student Help and show the cute Vietnamese student home screen.
-2. Show verification status and explain manual admin review.
-3. Browse Ride Together with filters.
-4. Browse Marketplace with realistic listings.
-5. Create or inspect a Lost and Found post with privacy check state.
-6. Open Food and Deals, view a vendor menu, favorite the vendor, and start manual food order chat.
-7. Show chat, quick messages, and phone request consent.
-8. Show community alerts, Campus Quick Links, badges, and reputation.
-9. Switch briefly to admin review queues if available.
-
-## APK Build Placeholder
-
-Future command:
-
-```bash
-npx eas build --platform android --profile preview
-```
+1. Sign in as `minhanh@studenthelp.local` and show home: verification, reputation, active alerts, food preview, rides, chats, and quick links.
+2. Open Ride Together and show filters, map-safe meeting notes, and no realtime GPS.
+3. Open Lost and Found and search the four demo phrases; point out OCR/privacy states and manual admin review for ambiguous sensitive content.
+4. Open Food & Deals, filter nearby/open/favorites, view vendor profile, menu image, structured menu, save vendor/item, and quick order through chat.
+5. Open Services and show category/area/open/discount/admin-verified filters.
+6. Switch to vendor `0900000001`, edit shop status/profile, upload menu image, edit menu items, and create vendor posts.
+7. Switch to admin, show overview stats, manual verification queue, vendor creation/reset/suspend, reports/blocks, AI/OCR settings, alerts, quick links, and services CRUD.
 
 ## Known Limitations
 
-Placeholder:
-
-- Expo app foundation exists with polished placeholder screens only.
-- Backend migrations, RLS policies, storage buckets, and seed SQL are applied to Supabase cloud/staging.
-- Demo Auth accounts were repaired and verified through `npm run demo:auth`; keep real-device login verification in the customer-demo QA path.
-- AI features are optional and must not block demo.
+- Food ordering is chat-only by design: no payment, no order management, no delivery tracking.
+- OCR remains Expo-safe rule-based demo logic; no native OCR module was added.
+- Some Prompt 4 metadata is app-level demo data because the Prompt 2 schema is intentionally lean.
+- Real Android device QA is still recommended before a customer rehearsal.

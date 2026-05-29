@@ -10,9 +10,9 @@ export default function LoginScreen() {
   const router = useRouter();
   const { configured, loading, profile, signInStudent, signInVendor } = useAuth();
   const [email, setEmail] = useState("minhanh@studenthelp.local");
-  const [phone, setPhone] = useState("0900000201");
-  const [password, setPassword] = useState("StudentHelp123!");
-  const [vendorPassword, setVendorPassword] = useState("VendorDemo123!");
+  const [phone, setPhone] = useState("0900000001");
+  const [password, setPassword] = useState("student123456");
+  const [vendorPassword, setVendorPassword] = useState("vendor123456");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -78,7 +78,7 @@ export default function LoginScreen() {
         <AppInput label="Mật khẩu vendor" placeholder="••••••••" secureTextEntry value={vendorPassword} onChangeText={setVendorPassword} />
         <AppButton title="Đăng nhập vendor" variant="secondary" onPress={submitVendor} />
       </AppCard>
-      <Text style={styles.note}>Demo seed mặc định: admin@studenthelp.local / StudentHelp123!, minhanh@studenthelp.local / StudentHelp123!, vendor 0900000201 / VendorDemo123!.</Text>
+      <Text style={styles.note}>Demo seed mặc định: admin@studenthelp.local / admin123456, minhanh@studenthelp.local / student123456, vendor 0900000001 / vendor123456.</Text>
       <Link href="/(auth)/register" asChild>
         <AppButton title="Chưa có tài khoản? Đăng ký" variant="ghost" />
       </Link>

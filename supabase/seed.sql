@@ -59,8 +59,57 @@ insert into public.badges (key, label, description, icon)
 values
   ('verified_student', 'Sinh vien da xac minh', 'Da duoc admin duyet the sinh vien thu cong', 'shield-checkmark'),
   ('helpful_friend', 'Ban hoc co tam', 'Hay giup ban khac tim do hoac di chung', 'heart'),
-  ('deal_hunter', 'San deal sinh vien', 'Hay luu quan va deal huu ich', 'star')
+  ('deal_hunter', 'San deal sinh vien', 'Hay luu quan va deal huu ich', 'star'),
+  ('lost_found_helper', 'Nguoi tra do tot bung', 'Da giup tra do that lac cho ban khac', 'sparkles'),
+  ('safe_chatter', 'Chat an toan', 'Ton trong dong y chia se so dien thoai', 'chatbubbles'),
+  ('campus_connector', 'Ket noi campus', 'Tich cuc chia se link va dich vu huu ich', 'link')
 on conflict (key) do update set
   label = excluded.label,
   description = excluded.description,
   icon = excluded.icon;
+
+insert into public.community_alerts (id, title, body, area, severity, is_active)
+values
+  ('40000000-0000-0000-0000-000000000001', 'Duong vao KTX B dong sau 17:30', 'Uu tien hen diem ro rang khi di chung. Khong can chia se GPS realtime.', 'KTX B', 'info', true),
+  ('40000000-0000-0000-0000-000000000002', 'Che MSSV truoc khi dang Lost and Found', 'Anh co the sinh vien, CCCD, so dien thoai hoac tai khoan ngan hang phai qua kiem tra rieng tu.', 'VNU-HCM', 'warning', true),
+  ('40000000-0000-0000-0000-000000000003', 'Canh bao gia danh shipper', 'Khong chuyen khoan trong app. Student Help khong co thanh toan hoac tracking giao hang.', 'Di An', 'urgent', true),
+  ('40000000-0000-0000-0000-000000000004', 'Mua lon quanh Linh Trung', 'Mang ao mua, uu tien diem hen co mai che.', 'Thu Duc', 'info', true)
+on conflict (id) do update set
+  title = excluded.title,
+  body = excluded.body,
+  area = excluded.area,
+  severity = excluded.severity,
+  is_active = excluded.is_active,
+  updated_at = now();
+
+insert into public.campus_quick_links (id, title, url, category, description, sort_order, is_active)
+values
+  ('41000000-0000-0000-0000-000000000001', 'Ban do VNU-HCM', 'https://maps.google.com/?q=VNU-HCM', 'Ban do', 'Mo khu Lang Dai hoc tren Google Maps.', 1, true),
+  ('41000000-0000-0000-0000-000000000002', 'Tuyen bus qua KTX', 'https://maps.google.com/?q=bus%20KTX%20Khu%20B', 'Di chuyen', 'Tra nhanh cac tuyen di KTX A/B.', 2, true),
+  ('41000000-0000-0000-0000-000000000003', 'Cong thong tin UIT', 'https://www.uit.edu.vn', 'Hoc vu', 'Link demo den trang truong.', 3, true),
+  ('41000000-0000-0000-0000-000000000004', 'Thu vien Trung tam', 'https://vnuhcm.edu.vn', 'Hoc vu', 'Gio mo cua va muon tra sach.', 4, true),
+  ('41000000-0000-0000-0000-000000000005', 'So khan cap khu KTX', 'tel:0900000999', 'An toan', 'Danh ba demo cho bao ve va y te.', 5, true)
+on conflict (id) do update set
+  title = excluded.title,
+  url = excluded.url,
+  category = excluded.category,
+  description = excluded.description,
+  sort_order = excluded.sort_order,
+  is_active = excluded.is_active;
+
+insert into public.services (id, title, category, description, area, price_hint, status)
+values
+  ('42000000-0000-0000-0000-000000000001', 'In an KTX B 24h', 'printing', 'In tai lieu, dong gay, scan bai tap.', 'KTX B', '500d/trang', 'active'),
+  ('42000000-0000-0000-0000-000000000002', 'Giat say May Sach', 'laundry', 'Nhan giat theo kg, co giao tan noi.', 'Di An', '18k/kg', 'active'),
+  ('42000000-0000-0000-0000-000000000003', 'Sua xe Chu Tu', 'bike repair', 'Va xe, thay nhot, cuu ho gan KTX.', 'Lang Dai hoc', 'tu 15k', 'active'),
+  ('42000000-0000-0000-0000-000000000004', 'Laptop UIT Care', 'laptop repair', 'Ve sinh laptop, cai phan mem hoc tap.', 'Thu Duc', 'tu 80k', 'active'),
+  ('42000000-0000-0000-0000-000000000005', 'Gia su Toan cao cap', 'tutoring', 'Nhom on thi cuoi ky buoi toi.', 'KTX A', '40k/buoi', 'active'),
+  ('42000000-0000-0000-0000-000000000006', 'Photo Cong UIT', 'printing', 'In slide, bia kieng, ban but va giay kiem tra.', 'Lang Dai hoc', 'gia sinh vien', 'active')
+on conflict (id) do update set
+  title = excluded.title,
+  category = excluded.category,
+  description = excluded.description,
+  area = excluded.area,
+  price_hint = excluded.price_hint,
+  status = excluded.status,
+  updated_at = now();

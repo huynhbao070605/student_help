@@ -2,7 +2,7 @@
 
 ## Current Phase
 
-Phase 3: Student-facing core experience implemented.
+Phase 4: Vendor/admin features and full demo data implemented.
 
 ## Completed Features
 
@@ -34,6 +34,16 @@ Phase 3: Student-facing core experience implemented.
 - Prompt 3 implemented Vietnamese smart search without AI with synonym matching and confidence labels.
 - Prompt 3 implemented student chat inbox/detail, send text, send image, read/unread presentation, context-aware quick messages, mini profile cards, report/block actions, and phone request consent card with approve/decline.
 - Prompt 3 expanded student profile with reputation explanation, badges, account dates, privacy controls, and completed activity stats.
+- Prompt 4 implemented Food & Deals listing, vendor profile, menu quick view, menu image view, quick chat order, saved vendors, saved menu items, reorder, favorite vendors, fake nearby restaurants, and food filters.
+- Prompt 4 implemented Student Services directory with category, area, open now, open late, student discount, delivery, preorder, admin verified, favorited, and rating filters.
+- Prompt 4 implemented Campus Quick Links grouped list with filters, save action, and external open action.
+- Prompt 4 implemented Community Alerts dismiss action on student home and admin CRUD-style alert management.
+- Prompt 4 implemented vendor dashboard with shop profile edit, opening status, location query/note, Google Maps URL, and vendor tags.
+- Prompt 4 implemented vendor menu management with image upload, menu image tab, add/edit/delete structured menu items, item availability, tags, and options.
+- Prompt 4 implemented vendor posts for daily deal, new item, combo, notice, sold out, and group order.
+- Prompt 4 implemented admin overview stats, verification queue visibility, user/vendor management, create/reset/suspend vendor account demo controls, reports, blocks, moderation, app settings, AI/OCR settings display, community alerts CRUD, quick links CRUD, and services CRUD.
+- Prompt 4 expanded demo Auth repair to 1 admin, 12 students, and 6 phone-style vendor accounts with the requested credentials.
+- Prompt 4 expanded seed/app demo data for vendors, menus, vendor posts, services, alerts, quick links, rides, marketplace, Lost and Found, saved searches, conversations, phone request states, reports, blocks, reputation events, and badges.
 - Mobile auth/session provider, vendor phone-style login mapping, role guards, logout, profile update, avatar upload, student-card upload, and admin verification approve/reject hooks created.
 - Android app config, placeholder icon, adaptive icon, and splash assets created.
 - Backend foundation exists as migrations/seed and app integration hooks; full product flows are not implemented yet.
@@ -52,14 +62,6 @@ Phase 3: Student-facing core experience implemented.
 - Full manual student verification workflow polish beyond profile upload/status.
 - Production-grade realtime chat subscriptions.
 - Native OCR integration.
-- Food and Deals.
-- Vendor menu management.
-- Favorite vendors.
-- Student services.
-- Community alerts.
-- Campus Quick Links.
-- Report and block.
-- Full demo seed data.
 - Android APK/AAB build setup.
 
 ## Last Successful Checks
@@ -112,6 +114,12 @@ Phase 3: Student-facing core experience implemented.
 - Prompt 3 proof check on 2026-05-29 re-ran `npm run typecheck` and `npm run lint`; both passed.
 - Prompt 3 proof check confirmed no project test script is configured in `package.json`.
 - Prompt 3 proof check ran Expo offline start again. The direct bounded run reached `Starting Metro Bundler` before timeout, and the hidden port `8082` smoke check returned Metro status `packager-status:running`.
+- Prompt 4 `npx supabase db query --linked --file supabase/seed.sql` passed.
+- Prompt 4 first `npm run demo:auth` was blocked by sandbox network access; rerun with approved network access passed and verified 1 admin, 12 students, and 6 vendors.
+- Prompt 4 `npm run typecheck` passed.
+- Prompt 4 `npm run lint` passed.
+- Prompt 4 found no configured root project test script in `package.json`.
+- Prompt 4 Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned Metro process was stopped afterward.
 
 ## Known Issues
 
@@ -119,8 +127,7 @@ Phase 3: Student-facing core experience implemented.
 - `npm install` reported 10 moderate transitive dependency vulnerabilities.
 - Demo Auth accounts are repaired and verified through `npm run demo:auth`.
 - Real Android device login and role-routing smoke verification should still be done during demo QA.
-- Food tab remains a polished placeholder; full food/vendor system is intentionally deferred to later prompts.
-- Admin/vendor dashboards remain foundation placeholders except for compatibility with role routing.
+- Prompt 4 food/vendor/admin/service screens are demo-complete but still use a lightweight app-level demo data layer for metadata not present in the Prompt 2 schema.
 - OCR uses an Expo-safe rule-based text detector and manual privacy check marker; no native OCR module was added.
 - Chat supports demo/local interaction and basic Supabase message insert when conversation IDs are real; production realtime subscriptions are deferred.
 - Some richer filters are UI/client-side because the current Prompt 2 schema does not have dedicated columns for every requested filter dimension.
@@ -130,4 +137,4 @@ Phase 3: Student-facing core experience implemented.
 
 ## Next Recommended Task
 
-Proceed to Prompt 3 proof/check or Prompt 4 safety and communication depth. Before customer demo, run real Android login, role routing, profile loading, post creation, image upload, chat, and logout smoke checks.
+Proceed to Prompt 5 final QA/release tasks only when ready. Before customer demo, run real Android login, role routing, profile loading, food/vendor/admin flows, image upload, chat, and logout smoke checks.

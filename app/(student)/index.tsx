@@ -110,6 +110,10 @@ export default function StudentHomeScreen() {
             <Text style={styles.cardTitle}>{alert.title}</Text>
           </View>
           <Text style={styles.text}>{alert.body}</Text>
+          <View style={styles.rowBetween}>
+            <AppButton title="Chi tiet" variant="secondary" />
+            <AppButton title="Da hieu" variant="ghost" onPress={() => setAlerts((current) => current.filter((item) => item.id !== alert.id))} />
+          </View>
         </AppCard>
       ))}
 

@@ -74,24 +74,24 @@
 - [x] Phone request consent UI for student demo.
 - [x] Basic report flow from chat.
 - [x] Basic block action from chat.
-- [ ] Admin review queues.
+- [x] Admin review queues.
 
 ## Phase 5: Vendor And Services
 
-- [ ] Food and Deals list/detail.
-- [ ] Vendor profile.
-- [ ] Menu image upload.
-- [ ] Manual menu editing.
-- [ ] Favorite vendors.
-- [ ] Student services.
+- [x] Food and Deals list/detail.
+- [x] Vendor profile.
+- [x] Menu image upload.
+- [x] Manual menu editing.
+- [x] Favorite vendors.
+- [x] Student services.
 
 ## Phase 6: Demo Data And Polish
 
-- [ ] Full demo seed data.
-- [ ] Community alerts.
-- [ ] Campus Quick Links.
-- [ ] Reputation score and badges.
-- [ ] Friendly empty states.
+- [x] Full demo seed data.
+- [x] Community alerts.
+- [x] Campus Quick Links.
+- [x] Reputation score and badges.
+- [x] Friendly empty states.
 - [ ] Vietnamese copy polish.
 - [ ] Android device QA.
 

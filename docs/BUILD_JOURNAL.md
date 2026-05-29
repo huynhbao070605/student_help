@@ -652,3 +652,74 @@ This file is append-only. Every prompt must append a new entry.
   - Some richer filters are UI/client-side because the current schema does not include every dedicated filter column.
   - Changed-file proof cannot use `git diff` because this workspace has no `.git` directory.
 - Next step: Prompt 4 safety/communication depth, or run real Android QA first for login, role routing, profile loading, post creation, image upload, chat, phone consent, and logout.
+
+## Prompt 4
+
+- Date: 2026-05-29
+- User request summary: Build vendor/admin features and full realistic demo seed data only. Do not implement Prompt 5 final QA/release tasks.
+- Scope: Vendor/admin/food/services/alerts/quick-links/demo-data implementation. EAS release setup and final QA/release tasks were not implemented.
+- Files changed:
+  - `app/(student)/food.tsx`
+  - `app/(student)/services.tsx`
+  - `app/(student)/quick-links.tsx`
+  - `app/(student)/index.tsx`
+  - `app/(student)/_layout.tsx`
+  - `app/(vendor)/index.tsx`
+  - `app/(vendor)/menu.tsx`
+  - `app/(vendor)/posts.tsx`
+  - `app/(admin)/index.tsx`
+  - `app/(admin)/vendors.tsx`
+  - `app/(admin)/reports.tsx`
+  - `app/(admin)/settings.tsx`
+  - `app/(auth)/login.tsx`
+  - `data/prompt4Demo.ts`
+  - `data/studentDemo.ts`
+  - `scripts/create-demo-auth-users.mjs`
+  - `supabase/seed.sql`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `docs/DEMO_GUIDE.md`
+- Commands run:
+  - `Get-Content -Path docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content -Path .cursor\skills\student-help-mobile-feature-builder\SKILL.md`
+  - `Get-Content -Path .cursor\skills\student-help-mobile-demo-seeder\SKILL.md`
+  - `Get-Content -Path docs\PRD.md`
+  - `Get-Content -Path docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content -Path docs\DECISIONS.md`
+  - `Get-Content -Path docs\CURRENT_STATE.md`
+  - `Get-Content -Path docs\TODO.md`
+  - `Get-Content -Path docs\BUILD_JOURNAL.md -Tail 140`
+  - `Get-Content -Path .cursor\rules\*.mdc`
+  - `rg --files app components data lib supabase scripts docs`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx supabase db query --linked --file supabase/seed.sql`
+  - `npm run demo:auth`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - `npx.cmd expo start --no-dev --minify --offline --port 8082`
+- Result:
+  - Food & Deals now has listing/search/filter UI, vendor profile detail, menu quick view, menu image view, quick order through chat, favorite vendor, save menu item, and reorder demo flow.
+  - Student Services directory now has required filters and populated service cards.
+  - Campus Quick Links now has grouped links, filters, save link, and external open actions.
+  - Community Alerts remain active on home and can be dismissed; admin settings has CRUD-style alert controls.
+  - Vendor dashboard now supports shop profile edit, opening status, location query/note, Google Maps URL, and vendor tags.
+  - Vendor menu now supports menu image upload, menu image tab, add/edit/delete structured menu items, availability, item tags, and item options.
+  - Vendor posts now support daily deal, new item, combo, notice, sold out, and group order.
+  - Admin dashboard now shows overview stats, manual verification policy, review queues, user/vendor/report/block/moderation coverage, AI/OCR settings, community alerts CRUD, quick links CRUD, services CRUD, and vendor create/reset/suspend demo controls.
+  - Demo Auth repair now creates and verifies `admin@studenthelp.local / admin123456`, 12 student accounts, and 6 phone-style vendor accounts including `0900000001`, `0900000002`, and `0900000003` with `vendor123456`.
+  - Seed SQL now includes deterministic services, community alerts, quick links, app settings, quick messages, and badges.
+  - In-app demo data now covers 15 rides, 25 marketplace/borrow/lend posts, 30 Lost and Found posts, saved searches, 12 conversations, phone request states, food vendors, menu images, menu items, vendor deals, fake distances, favorite vendors, saved menu items, services, alerts, quick links, reports, blocks, reputation, and badges.
+  - Search demo phrases are represented: `ví nâu gần KTX B`, `tai nghe trắng thư viện`, `thẻ sinh viên UIT`, and `bình nước xanh`.
+- Checks:
+  - `npx supabase db query --linked --file supabase/seed.sql` passed.
+  - Initial `npm run demo:auth` failed with sandbox `fetch failed` / `EACCES`; rerun with approved network access passed and verified all Prompt 4 demo Auth users.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project test script is configured in `package.json`.
+  - Expo offline smoke check reached Metro on port `8082` and `/status` returned `packager-status:running`; Metro process `18152` was stopped after the check.
+- Known issues:
+  - Some Prompt 4 fields are app-level demo metadata because the existing Prompt 2 schema does not have dedicated columns for every food/vendor/admin filter.
+  - OCR remains rule-based and Expo-safe; no native OCR module was added.
+  - Real Android device QA is still pending.
+- Next step: Prompt 5 final QA/release work when requested.

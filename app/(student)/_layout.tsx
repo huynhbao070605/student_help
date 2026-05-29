@@ -43,6 +43,8 @@ export default function StudentTabsLayout() {
       <Tabs.Screen name="chat" options={{ title: "Tin nhắn", tabBarIcon: tabIcon("chatbubbles") }} />
       <Tabs.Screen name="profile" options={{ title: "Cá nhân", tabBarIcon: tabIcon("person-circle") }} />
       <Tabs.Screen name="marketplace" options={{ href: null }} />
+      <Tabs.Screen name="services" options={{ href: null }} />
+      <Tabs.Screen name="quick-links" options={{ href: null }} />
     </Tabs>
   );
 }
