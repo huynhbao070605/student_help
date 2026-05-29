@@ -1,0 +1,654 @@
+# Build Journal
+
+This file is append-only. Every prompt must append a new entry.
+
+## Prompt 0
+
+- Date: 2026-05-29
+- User request summary: Create project documentation, Cursor rules, Cursor skills, and project memory for Student Help without building app features.
+- Scope: Documentation and workflow memory only.
+- Files changed:
+  - `docs/PRD.md`
+  - `docs/MOBILE_TECHNICAL_SPEC.md`
+  - `docs/DECISIONS.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `docs/CONTEXT_BOOTSTRAP.md`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/UI_STYLE_GUIDE.md`
+  - `.cursor/rules/000-context-discipline.mdc`
+  - `.cursor/rules/010-mobile-product-principles.mdc`
+  - `.cursor/rules/020-expo-tech-stack.mdc`
+  - `.cursor/rules/030-mobile-ui-style.mdc`
+  - `.cursor/rules/040-supabase-security.mdc`
+  - `.cursor/rules/050-testing-debugging.mdc`
+  - `.cursor/rules/060-demo-seed-data.mdc`
+  - `.cursor/rules/070-android-release-readiness.mdc`
+  - `.cursor/skills/student-help-mobile-feature-builder/SKILL.md`
+  - `.cursor/skills/student-help-supabase-mobile/SKILL.md`
+  - `.cursor/skills/student-help-mobile-demo-seeder/SKILL.md`
+  - `.cursor/skills/student-help-mobile-qa/SKILL.md`
+  - `.cursor/skills/student-help-mobile-ui-polisher/SKILL.md`
+- Commands run:
+  - `Get-ChildItem -Force; Get-ChildItem -Force docs -ErrorAction SilentlyContinue; Get-ChildItem -Force .cursor -ErrorAction SilentlyContinue`
+- Result: Project memory, documentation, Cursor rules, and Cursor skill workflows created. No app features were built.
+- Known issues:
+  - No Expo app scaffold exists yet.
+  - No Supabase schema exists yet.
+  - No tests, lint, or typecheck are available yet.
+- Next step: Scaffold the Expo React Native TypeScript app with Expo Router and baseline Android-ready configuration.
+
+## Prompt 1
+
+- Date: 2026-05-29
+- User request summary: Show proof for Prompt 0 file creation and fix anything missing or vague before reporting done.
+- Scope: Verification and project memory update only.
+- Files changed:
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-ChildItem -Recurse -File docs | Sort-Object FullName | Select-Object -ExpandProperty FullName`
+  - `Get-ChildItem -Recurse -File .cursor | Sort-Object FullName | Select-Object -ExpandProperty FullName`
+  - `Get-Content docs\BUILD_JOURNAL.md`
+  - `Get-Content docs\CURRENT_STATE.md`
+  - `Get-Content docs\TODO.md`
+- Result: Prompt 0 documentation, Cursor rules, and Cursor skills were verified as present. No missing Prompt 0 files were found. No app features were built.
+- Known issues:
+  - No Expo app scaffold exists yet.
+  - No Supabase schema exists yet.
+  - No tests, lint, or typecheck are available yet.
+- Next step: Scaffold the Expo React Native TypeScript app with Expo Router, pnpm, baseline Android app config, and placeholder role-aware navigation only.
+
+## Prompt 2
+
+- Date: 2026-05-29
+- User request summary: Create root `AGENTS.md` for Codex before continuing with app work.
+- Scope: Add Codex agent instructions and update build journal only.
+- Files changed:
+  - `AGENTS.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content docs\DECISIONS.md`
+  - `Get-Content docs\CONTEXT_BOOTSTRAP.md`
+  - `Test-Path AGENTS.md; Get-Content docs\BUILD_JOURNAL.md -Tail 30`
+- Result: Root `AGENTS.md` created with project goal, stack, Android-first/mobile-first principles, non-negotiable decisions, context discipline, scope rules, required project memory updates, and implementation check expectations. No app features were built.
+- Known issues:
+  - No Expo app scaffold exists yet.
+  - No Supabase schema exists yet.
+  - No tests, lint, typecheck, or Expo start scripts are available yet.
+- Next step: Scaffold the Expo React Native TypeScript app with Expo Router, pnpm, baseline Android app config, and placeholder role-aware navigation only.
+
+## Prompt 3
+
+- Date: 2026-05-29
+- User request summary: Implement Prompt 1 scope: create the real Expo React Native mobile app foundation with beautiful mobile-first UI, navigation shells, reusable design system components, Supabase client structure, docs updates, and checks.
+- Scope: Expo app foundation only. No backend implementation and no real product feature logic.
+- Files changed:
+  - `.env.example`
+  - `.gitignore`
+  - `README.md`
+  - `app.config.ts`
+  - `babel.config.js`
+  - `eslint.config.js`
+  - `expo-env.d.ts`
+  - `package.json`
+  - `package-lock.json`
+  - `tsconfig.json`
+  - `assets/images/icon.png`
+  - `assets/images/adaptive-icon.png`
+  - `assets/images/splash.png`
+  - `app/_layout.tsx`
+  - `app/index.tsx`
+  - `app/(auth)/_layout.tsx`
+  - `app/(auth)/onboarding.tsx`
+  - `app/(auth)/login.tsx`
+  - `app/(auth)/register.tsx`
+  - `app/(student)/_layout.tsx`
+  - `app/(student)/index.tsx`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/lost-found.tsx`
+  - `app/(student)/food.tsx`
+  - `app/(student)/chat.tsx`
+  - `app/(student)/profile.tsx`
+  - `app/(admin)/_layout.tsx`
+  - `app/(admin)/index.tsx`
+  - `app/(admin)/verifications.tsx`
+  - `app/(admin)/reports.tsx`
+  - `app/(admin)/vendors.tsx`
+  - `app/(admin)/settings.tsx`
+  - `app/(vendor)/_layout.tsx`
+  - `app/(vendor)/index.tsx`
+  - `app/(vendor)/menu.tsx`
+  - `app/(vendor)/posts.tsx`
+  - `app/(vendor)/chats.tsx`
+  - `app/(vendor)/profile.tsx`
+  - `components/screens/PlaceholderListScreen.tsx`
+  - `components/ui/AppBadge.tsx`
+  - `components/ui/AppBottomSheet.tsx`
+  - `components/ui/AppButton.tsx`
+  - `components/ui/AppCard.tsx`
+  - `components/ui/AppEmptyState.tsx`
+  - `components/ui/AppErrorState.tsx`
+  - `components/ui/AppHeader.tsx`
+  - `components/ui/AppInput.tsx`
+  - `components/ui/AppLoadingState.tsx`
+  - `components/ui/AppScreen.tsx`
+  - `components/ui/AppSearchBar.tsx`
+  - `components/ui/Avatar.tsx`
+  - `components/ui/QuickActionCard.tsx`
+  - `components/ui/ReputationBadge.tsx`
+  - `components/ui/SectionHeader.tsx`
+  - `components/ui/VerifiedBadge.tsx`
+  - `components/ui/index.ts`
+  - `constants/theme.ts`
+  - `data/placeholders.ts`
+  - `lib/env.ts`
+  - `lib/supabase/client.ts`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `docs/MOBILE_TECHNICAL_SPEC.md`
+  - `docs/DEMO_GUIDE.md`
+- Commands run:
+  - `Get-Content AGENTS.md`
+  - `Get-Content docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content docs\PRD.md`
+  - `Get-Content docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content docs\DECISIONS.md`
+  - `Get-Content docs\CURRENT_STATE.md`
+  - `Get-Content docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 80`
+  - `Get-Content .cursor\rules\*.mdc`
+  - `Get-Content .cursor\skills\student-help-mobile-feature-builder\SKILL.md`
+  - `Get-Content .cursor\skills\student-help-mobile-ui-polisher\SKILL.md`
+  - `Get-Content .cursor\skills\student-help-mobile-qa\SKILL.md`
+  - `pnpm --version`
+  - `node --version`
+  - `npm --version`
+  - `npm install`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo start --no-dev --minify --offline`
+  - `Get-Content tsconfig.json`
+  - `Get-ChildItem -Force .expo -ErrorAction SilentlyContinue | Select-Object Name,Mode`
+  - `npx expo config --type public`
+  - `Get-ChildItem -Force | Select-Object Name,Mode`
+  - `Get-ChildItem -Recurse -File app,components,constants,data,lib,assets | Sort-Object FullName | Select-Object -ExpandProperty FullName`
+  - `Select-String -Path docs\BUILD_JOURNAL.md,docs\CURRENT_STATE.md,docs\TODO.md -Pattern "Prompt 3|npm run typecheck|npm run lint|Expo start|Phase 1|Supabase client shell"`
+  - `Start-Process -FilePath 'npx.cmd' -ArgumentList @('expo','start','--host','lan') ...`
+  - `Get-NetTCPConnection -LocalPort 8081 -State Listen -ErrorAction SilentlyContinue`
+  - `Start-Process -FilePath 'npm.cmd' -ArgumentList @('start','--','--host','lan') ...`
+  - `Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,Path,StartTime`
+- Result:
+  - Expo React Native TypeScript foundation created.
+  - Expo Router auth, student, admin, and vendor route groups created.
+  - Student, admin, and vendor tab shells created with Vietnamese labels.
+  - Reusable mobile UI components created.
+  - Supabase client shell and environment variable pattern created.
+  - Android app metadata and placeholder assets created.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - Expo start smoke check started Metro and waited on `http://localhost:8081`; command was intentionally bounded and ended by timeout to avoid leaving the server running.
+  - Expo public config resolved successfully with app name `Student Help`, Android package `com.studenthelp.app`, splash image, adaptive icon, and no Android permissions.
+  - Expo dev server was started in the background with `npm start -- --host lan` and is waiting on `http://localhost:8081`.
+- Known issues:
+  - `pnpm` is unavailable, so npm fallback was used and documented.
+  - `npm install` reported 10 moderate transitive dependency vulnerabilities.
+  - No Supabase schema, RLS, storage policies, or seed data exist yet.
+  - Screens are polished placeholders only.
+  - Dev server logs are in `.expo/dev-server.out.log` and `.expo/dev-server.err.log`.
+- Next step: Create the Supabase foundation plan and migrations for schema, RLS, storage buckets, auth roles, and deterministic demo seed strategy without wiring full product flows yet.
+
+## Prompt 4
+
+- Date: 2026-05-29
+- User request summary: Show proof for Prompt 1 files, commands, checks, screens, docs updates, known issues, and next recommended prompt.
+- Scope: Verification and project memory update only.
+- Files changed:
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `npm run typecheck`
+  - `npm run lint`
+  - `Get-ChildItem -Recurse -File app,components,constants,data,lib,assets | Sort-Object FullName | Select-Object -ExpandProperty FullName`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 130`
+  - `try { (Invoke-WebRequest -UseBasicParsing http://localhost:8081/status -TimeoutSec 10).Content } catch { $_.Exception.Message }`
+  - `npx expo config --type public`
+  - `Get-Process node -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,StartTime`
+  - `Test-Path docs\CURRENT_STATE.md; Test-Path docs\TODO.md; Test-Path docs\BUILD_JOURNAL.md`
+  - `Start-Process -FilePath 'npm.cmd' -ArgumentList @('start','--','--host','localhost') ...`
+  - `Invoke-WebRequest -UseBasicParsing http://localhost:8081/status -TimeoutSec 10`
+  - `Get-Content .expo\dev-server.out.log -ErrorAction SilentlyContinue -Tail 80`
+  - `Get-Content .expo\dev-server.err.log -ErrorAction SilentlyContinue -Tail 80`
+- Result:
+  - Prompt 1 files and routes were verified.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed.
+  - Expo start verification reached Metro status `packager-status:running` after `npm start -- --host localhost`; the status response appeared as ASCII byte values in PowerShell output.
+  - No missing required Prompt 1 screens were found.
+- Known issues:
+  - `pnpm` is unavailable, so npm fallback is in use.
+  - `npm install` previously reported 10 moderate transitive dependency vulnerabilities.
+  - No Supabase schema, RLS, storage policies, or seed data exist yet.
+  - Screens are polished placeholders only.
+  - Background Expo dev server may exit after hidden launch in this environment; use `npm start` in a visible terminal for an interactive demo session if needed.
+- Next step: Create the Supabase foundation plan and migrations for schema, RLS, storage buckets, auth roles, and deterministic demo seed strategy without wiring full product flows yet.
+
+## Prompt 5
+
+- Date: 2026-05-29
+- User request summary: Implement Prompt 2 scope: backend foundation, Supabase schema, RLS, storage buckets, seed foundation, auth/roles/session persistence, profile/verification basics, and documentation.
+- Scope: Supabase backend foundation and foundation-level mobile auth/profile integration only. Full product flows were not implemented.
+- Files changed:
+  - `.env.example`
+  - `README.md`
+  - `package.json`
+  - `package-lock.json`
+  - `app/_layout.tsx`
+  - `app/(auth)/login.tsx`
+  - `app/(auth)/register.tsx`
+  - `app/(student)/_layout.tsx`
+  - `app/(student)/profile.tsx`
+  - `app/(admin)/_layout.tsx`
+  - `app/(admin)/verifications.tsx`
+  - `app/(vendor)/_layout.tsx`
+  - `lib/supabase/client.ts`
+  - `lib/auth/AuthProvider.tsx`
+  - `lib/auth/useRoleGuard.tsx`
+  - `lib/auth/vendorEmail.ts`
+  - `lib/storage/uploadImage.ts`
+  - `supabase/config.toml`
+  - `supabase/migrations/202605290001_foundation_schema.sql`
+  - `supabase/migrations/202605290002_rls_policies.sql`
+  - `supabase/migrations/202605290003_storage_buckets.sql`
+  - `supabase/seed.sql`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content docs\PRD.md`
+  - `Get-Content docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content docs\DECISIONS.md`
+  - `Get-Content .cursor\skills\student-help-supabase-mobile\SKILL.md`
+  - `Get-Content docs\CURRENT_STATE.md`
+  - `Get-Content docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 120`
+  - `Get-Content .cursor\rules\040-supabase-security.mdc`
+  - `npm install expo-image-picker @react-native-async-storage/async-storage`
+  - `supabase --version`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+  - Source safety scan for accidental Supabase URL/key fragments outside `.env`.
+  - `Get-Content .env.example`
+  - `Select-String -Path docs\BUILD_JOURNAL.md,docs\CURRENT_STATE.md,docs\TODO.md -Pattern 'Prompt 2.5','Seed status','migration list','EXPO_PUBLIC_SUPABASE','seed.sql'`
+  - `supabase db reset`
+  - `supabase db push`
+- Result:
+  - Schema migrations created for all requested tables.
+  - RLS policies created for public-safe data, self-owned profile updates, admin management, vendor ownership, private student verification data, participant-only chat, contact request consent, and phone privacy.
+  - Storage buckets and storage policies created for avatars, student cards, marketplace images, Lost and Found images, chat images, vendor images, menu images, and service images.
+  - Seed SQL created for universities, housing areas, app settings, quick messages, badges, demo admin, demo students, and demo vendors.
+  - Mobile app now has Supabase session persistence with AsyncStorage, auth provider, student email/password login, vendor phone-style login mapping, role guards, logout, profile edit, avatar upload, student-card upload, and admin approve/reject hooks.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+  - `supabase db reset` did not run because the Supabase CLI is not installed.
+  - `supabase db push` did not run because the Supabase CLI is not installed.
+- Known issues:
+  - Supabase CLI is not installed, so migrations and seed were not applied locally.
+  - Supabase cloud/staging project is not linked and `.env` is not configured.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Apply the Supabase migrations and seed to a cloud/staging project, add generated database types, and verify student/admin/vendor auth flows on a real Android device.
+
+## Prompt 2 Proof/Check
+
+- Date: 2026-05-29
+- User request summary: Show proof for Prompt 2 backend foundation and rerun/fix required commands before reporting done.
+- Scope: Verification, Supabase CLI setup attempt, checks, and project memory update only.
+- Files changed:
+  - `package.json`
+  - `package-lock.json`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `npm install --save-dev supabase`
+  - `npx supabase --version`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `Get-ChildItem -Recurse -File supabase,lib,app | Sort-Object FullName | Select-Object -ExpandProperty FullName`
+  - `npx supabase db reset`
+  - `npx supabase db push`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+- Result:
+  - Supabase CLI dev dependency installed.
+  - `npx supabase --version` returned `2.102.0`.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+  - `npx supabase db reset` did not apply migrations/seed because Docker Desktop is not available/running: Docker client could not connect to `//./pipe/docker_engine`.
+  - `npx supabase db push` did not apply migrations because no Supabase project is linked: `Cannot find project ref. Have you run supabase link?`
+- Known issues:
+  - Local migration/seed requires Docker Desktop running.
+  - Cloud/staging migration requires `supabase link --project-ref <project-ref>`.
+  - Supabase `.env` values are not configured.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Link a Supabase cloud/staging project, push migrations, apply seed data, set `.env`, generate database types, and verify student/admin/vendor auth flows on a real Android device.
+
+## Prompt 2.5
+
+- Date: 2026-05-29
+- User request summary: Verify and stabilize Supabase cloud setup after successful local migration push, without rerunning remote migrations or implementing Prompt 3 product flows.
+- Scope: Verification, seed stabilization, env/config safety, docs, and checks only.
+- Files changed:
+  - `.env.example`
+  - `README.md`
+  - `app.config.ts`
+  - `supabase/seed.sql`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content docs\PRD.md`
+  - `Get-Content docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content docs\DECISIONS.md`
+  - `Get-Content .cursor\skills\student-help-supabase-mobile\SKILL.md`
+  - `Get-Content docs\CURRENT_STATE.md`
+  - `Get-Content docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 140`
+  - `Get-ChildItem -Force .env,.env.example | Select-Object Name,Length`
+  - `.env` key-name inspection only; values were not intentionally printed or committed.
+  - `rg -n "from\(|storage\.from|rpc\(|student_verifications|profiles|vendors|avatars|student-cards|vendor\.studenthelp\.local|approve_student_verification|reject_student_verification" app lib supabase`
+  - `rg -n "create table public\.|create policy|insert into storage\.buckets|insert into auth\.users|auth\.identities|insert into public\.vendors|insert into public\.universities|insert into public\.housing_areas" supabase`
+  - `Get-Content supabase\seed.sql`
+  - `npx supabase migration list`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `rg -n "auth\.identities|20000000|10000000|on conflict \(id\)|student-cards|avatars|profiles|student_verifications|approve_student_verification|reject_student_verification" supabase app lib`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+- Result:
+  - Local and remote migration versions match for `202605290001`, `202605290002`, and `202605290003`.
+  - Remote migrations were not rerun.
+  - `.env` contains `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`; `.env` remains ignored and values were not committed.
+  - `.env.example` was corrected back to placeholder values.
+  - App table/bucket/RPC references match the Prompt 2 migrations for `profiles`, `student_verifications`, `avatars`, `student-cards`, `approve_student_verification`, and `reject_student_verification`.
+  - `supabase/seed.sql` was stabilized for later staging/demo application with deterministic IDs, idempotent upserts, and `auth.identities` rows for seeded login accounts.
+  - Seed was not applied.
+  - Removed Supabase URL/key values from Expo config `extra`; app still reads them through `process.env`.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed and no longer prints Supabase URL/key values under `extra`.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+  - Source safety scan found no real Supabase URL/key values outside `.env`; only environment variable names remain in source.
+- Known issues:
+  - Seed SQL has not been applied to cloud/staging yet.
+  - Local Supabase reset still requires Docker Desktop.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Apply `supabase/seed.sql` to the linked cloud/staging project, generate database types, and verify student/admin/vendor auth flows on a real Android device before starting Prompt 3 product flows.
+
+## Prompt 2.6
+
+- Date: 2026-05-29
+- User request summary: Verify seed and auth readiness before Prompt 3 after user applied `supabase/seed.sql` to linked Supabase cloud.
+- Scope: Verification, generated database types, docs, and checks only. Prompt 3 product flows were not implemented.
+- Files changed:
+  - `README.md`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `lib/supabase/client.ts`
+  - `lib/supabase/database.types.ts`
+- Commands run:
+  - `Get-Content docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content docs\CURRENT_STATE.md`
+  - `Get-Content docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 120`
+  - `Get-Content README.md`
+  - `Get-Content docs\DEMO_GUIDE.md`
+  - `npx supabase gen types typescript --linked --schema public > lib\supabase\database.types.ts`
+  - `npx supabase gen types typescript --linked --schema public | Set-Content -Path lib\supabase\database.types.ts -Encoding utf8`
+  - BOM removal for `lib\supabase\database.types.ts`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+- Result:
+  - User-reported seed status recorded as applied: `npx supabase db query --linked --file supabase/seed.sql` completed without visible errors before this prompt.
+  - Demo accounts remain documented in `README.md` and `docs/DEMO_GUIDE.md`.
+  - Generated linked Supabase database types at `lib/supabase/database.types.ts`.
+  - Supabase client now uses `SupabaseClient<Database>`.
+  - Initial type generation via PowerShell redirection produced an encoding issue; regenerated as UTF-8 and removed BOM.
+  - Direct Supabase Auth verification was attempted for seeded admin, student, and vendor accounts.
+  - Seeded auth login failed at the admin account with `Database error querying schema`; profile rows and auth rows exist, but seeded Auth login is not ready.
+  - A narrow attempt to set `auth.identities.email` was rejected because the column is generated; `supabase/seed.sql` was reverted to keep it safe.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed and does not expose Supabase URL/key in `extra`.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+- Known issues:
+  - Real Android device auth verification is still pending.
+  - Seeded demo Auth accounts need repair/recreation through Supabase Auth before demo login can be trusted.
+  - Local Supabase reset still requires Docker Desktop.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Repair or recreate seeded demo Auth accounts through Supabase Auth, then verify student/admin/vendor login, role routing, profile loading, and logout on a real Android device before Prompt 3 product flows.
+
+## Prompt 2.7
+
+- Date: 2026-05-29
+- User request summary: Repair demo Auth account strategy before Prompt 3 after seeded Supabase Auth login failed with `Database error querying schema`.
+- Scope: Auth/profile/role demo setup only. Prompt 3 product flows were not implemented.
+- Files changed:
+  - `.env.example`
+  - `package.json`
+  - `README.md`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `supabase/seed.sql`
+  - `scripts/create-demo-auth-users.mjs`
+- Commands run:
+  - `Get-Content -Raw supabase\seed.sql`
+  - `Get-Content -Raw package.json`
+  - `Get-Content -Raw README.md`
+  - `Get-Content -Raw docs\DEMO_GUIDE.md`
+  - `Get-Content -Raw docs\CURRENT_STATE.md`
+  - `Get-Content -Raw docs\TODO.md`
+  - `rg -n "create table public\.(profiles|vendors)|alter table public\.(profiles|vendors)|references public\.profiles|owner_id" supabase\migrations\202605290001_foundation_schema.sql`
+  - `.env` key-name inspection only; values were not printed or committed.
+  - `npm run demo:auth`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+  - `rg -n "auth\.users|auth\.identities|SUPABASE_SERVICE_ROLE_KEY|demo:auth|Database error querying schema" README.md docs supabase scripts package.json .env.example`
+- Result:
+  - Root cause identified: earlier seed SQL directly inserted into hosted Supabase Auth internals (`auth.users` and `auth.identities`). Those rows can look present but still fail Supabase Auth login with `Database error querying schema`.
+  - `supabase/seed.sql` now seeds public reference/demo support data only and documents that Auth users must be created through the Auth Admin API.
+  - Added `scripts/create-demo-auth-users.mjs`, a service-role-only local script that deletes/recreates demo Auth users through Supabase Auth Admin API, upserts matching `profiles`, upserts vendor records, and verifies login/profile loading with the anon key.
+  - Added `npm run demo:auth`.
+  - `.env.example`, README, and demo guide document the local-only service role setup and required demo accounts.
+  - `npm run demo:auth` was attempted and stopped safely with `Missing required local env values: SUPABASE_SERVICE_ROLE_KEY`; no remote Auth repair was performed.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - `npx expo config --type public` passed and does not expose Supabase URL/key values in `extra`.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+- Known issues:
+  - Demo Auth accounts are not repaired yet because `SUPABASE_SERVICE_ROLE_KEY` is not present in local `.env`.
+  - Real Android device verification for admin/student/vendor login, role routing, profile loading, and logout is still pending.
+  - Local Supabase reset still requires Docker Desktop.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Add `SUPABASE_SERVICE_ROLE_KEY` locally, run `npm run demo:auth`, verify the three role logins on Android, then proceed to Prompt 3 only after those checks pass.
+
+## Prompt 2.8
+
+- Date: 2026-05-29
+- User request summary: Record successful demo Auth repair after user reapplied seed SQL and ran the service-role Auth repair script.
+- Scope: Documentation and project memory updates only. Prompt 3 product flows were not implemented.
+- Files changed:
+  - `README.md`
+  - `docs/DEMO_GUIDE.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run by user:
+  - `npx supabase db query --linked --file supabase/seed.sql`
+  - `npm run demo:auth`
+  - `npm run typecheck`
+  - `npm run lint`
+- Commands run by Codex:
+  - `Get-Content -Raw README.md`
+  - `Get-Content -Raw docs\DEMO_GUIDE.md`
+  - `Get-Content -Raw docs\CURRENT_STATE.md`
+  - `Get-Content -Raw docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 120`
+- Result:
+  - User reported seed reapply completed without visible errors.
+  - User reported `npm run demo:auth` passed.
+  - User reported these demo Auth users were verified:
+    - `admin@studenthelp.local`
+    - `minhanh@studenthelp.local`
+    - `quanghuy@studenthelp.local`
+    - `0900000201@vendor.studenthelp.local`
+    - `0900000202@vendor.studenthelp.local`
+  - User reported `Demo Auth users repaired and verified`.
+  - User reported `npm run typecheck` passed.
+  - User reported `npm run lint` passed.
+  - README, demo guide, current state, and TODO now record Prompt 2.8 success.
+- Known issues:
+  - Real Android device login and role-routing smoke verification should still be included in demo QA.
+  - Local Supabase reset still requires Docker Desktop.
+  - `npm install` reports 10 moderate transitive dependency vulnerabilities.
+  - Product flows beyond auth/profile/verification foundation remain placeholders.
+- Next step: Proceed to Prompt 3 core student flows, keeping real Android login/profile/logout smoke checks in the QA path.
+
+## Prompt 3
+
+- Date: 2026-05-29
+- User request summary: Build the full student-facing core experience after Supabase migrations, seed, demo Auth repair, typecheck, and lint were verified.
+- Scope: Student-facing core experience only. Prompt 4 depth, full vendor dashboard, full admin dashboard, full food vendor system, and full demo seed expansion were not implemented.
+- Files changed:
+  - `app/(student)/_layout.tsx`
+  - `app/(student)/index.tsx`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/lost-found.tsx`
+  - `app/(student)/chat.tsx`
+  - `app/(student)/profile.tsx`
+  - `components/ui/AppBottomSheet.tsx`
+  - `data/studentDemo.ts`
+  - `lib/student/privacySearch.ts`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content -Raw docs\CONTEXT_BOOTSTRAP.md`
+  - `Get-Content -Raw docs\PRD.md`
+  - `Get-Content -Raw docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content -Raw docs\DECISIONS.md`
+  - `Get-Content -Raw docs\CURRENT_STATE.md`
+  - `Get-Content -Raw docs\TODO.md`
+  - `Get-Content docs\BUILD_JOURNAL.md -Tail 100`
+  - `Get-Content -Raw .cursor\rules\000-context-discipline.mdc`
+  - `Get-Content -Raw .cursor\rules\010-mobile-product-principles.mdc`
+  - `Get-Content -Raw .cursor\rules\020-expo-tech-stack.mdc`
+  - `Get-Content -Raw .cursor\rules\030-mobile-ui-style.mdc`
+  - `Get-Content -Raw .cursor\skills\student-help-mobile-feature-builder\SKILL.md`
+  - `rg --files app components lib constants supabase`
+  - `rg --files data features hooks`
+  - `rg -n "create table public\.(matches|reputation_events|reports|blocks|contact_requests|conversations|conversation_participants|messages|community_alerts|campus_quick_links|favorite_vendors|vendor_distance_seed|marketplace_posts|lost_found_posts|ride_posts)" -A24 supabase\migrations\202605290001_foundation_schema.sql`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+  - `npx expo start --no-dev --minify --offline`
+- Result:
+  - Student home now has greeting, verification status, reputation, community alerts preview, quick actions, nearby food preview, ride suggestions, Lost and Found shortcut, marketplace shortcut, latest chats, and Campus Quick Links preview.
+  - Ride Together now has list/search/filter UI, create/edit/delete own posts, Google Maps open action through Linking, match request, safety note after match, and completion reputation event.
+  - Marketplace/Borrow/Lend now has list/search/filter UI, create/edit/delete own posts, all requested post types, image selection/upload, chat shortcut, completion confirmation, and reputation event.
+  - Lost and Found now has list/search/filter UI, create/edit/delete own posts, lost/found types, image selection/upload, smart search, saved searches, returned item flow, and return reputation event.
+  - Lost and Found privacy workflow now includes sensitive-info reminders, user privacy-checked marker, and an Expo-safe rule-based OCR fallback.
+  - OCR fallback applies requested risk logic: 0-10 auto pass, 11-59 admin review, 60-100 auto reject only with strong evidence, ambiguous text to admin review.
+  - Smart search works without AI with Vietnamese synonym matching and confidence labels.
+  - Chat now has inbox/detail, send text, send image, read/unread presentation, context-aware quick messages, mini profile card, report/block actions, phone request consent card, and approve/decline phone request.
+  - Student profile now shows profile details, reputation explanation, badges, account created date, last active date, and completed activity stats.
+  - Bottom tabs labels were corrected to readable Vietnamese.
+  - `npm run typecheck` initially found a missing quick-message key for `vendor/service`; fixed by adding those quick-message sets.
+  - Final `npm run typecheck` passed.
+  - Final `npm run lint` passed.
+  - `npx expo config --type public` passed and did not expose Supabase values in Expo `extra`.
+  - `npx expo start --no-dev --minify --offline` started Metro and waited on `http://localhost:8081`; the bounded smoke check was stopped by timeout.
+- Known issues:
+  - OCR is rule-based and text-input driven; no native OCR dependency was added because that would require development build/EAS implications.
+  - Food tab remains a polished placeholder; full food/vendor system is deferred.
+  - Admin/vendor dashboards remain foundation placeholders.
+  - Chat is demo-ready with local state and basic Supabase inserts for real conversation IDs, but production realtime subscriptions are deferred.
+  - Some filters are UI/client-side because the current schema does not include every requested dedicated filter column.
+  - Real Android device Prompt 3 smoke testing is still pending.
+- Next step: Run Prompt 3 proof/check, then proceed to Prompt 4 safety/communication depth or real Android QA.
+
+## Prompt 3 Proof Check
+
+- Date: 2026-05-29
+- User request summary: Provide proof for Prompt 3 files, commands, final checks, implemented scope, docs updates, known issues, and next recommended prompt. Re-run or fix required commands if missing or failed.
+- Scope: Verification and documentation update only. No app feature implementation changes were made.
+- Files changed by this proof check:
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+  - `.expo/proof-start.out.log`
+  - `.expo/proof-start.err.log`
+- Commands run by Codex:
+  - `Get-Content -Path docs\CONTEXT_BOOTSTRAP.md`
+  - `git status --short`
+  - `Get-Content -Path package.json`
+  - `Get-Content -Path docs\PRD.md`
+  - `Get-Content -Path docs\MOBILE_TECHNICAL_SPEC.md`
+  - `Get-Content -Path docs\DECISIONS.md`
+  - `Get-Content -Path docs\CURRENT_STATE.md`
+  - `Get-Content -Path docs\TODO.md`
+  - `Get-Content -Path docs\BUILD_JOURNAL.md -Tail 120`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - `npx expo start --no-dev --minify --offline`
+  - `Start-Process -FilePath 'npx' ...`
+  - `Start-Process -FilePath 'npx.cmd' ...`
+- Result:
+  - `.git` is not present in this workspace, so `git status --short` failed with `fatal: not a git repository (or any of the parent directories): .git`.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - Direct `npx expo start --no-dev --minify --offline` loaded `.env`, disabled networking, started the project, and reached `Starting Metro Bundler` before the bounded timeout stopped it.
+  - First hidden Expo smoke check failed because Windows `Start-Process` cannot run the `npx` shim directly and reported `%1 is not a valid Win32 application`.
+  - Corrected hidden Expo smoke check with `npx.cmd expo start --no-dev --minify --offline --port 8082` returned Metro status `packager-status:running`, then stopped the spawned process.
+  - Prompt 3 implementation status remains recorded as complete for student home, Ride Together, Marketplace/Borrow/Lend, Lost and Found base, Lost and Found privacy workflow, OCR-safe fallback, Smart Search, Chat, Phone request consent, and Student profile.
+- Known issues:
+  - Real Android device Prompt 3 smoke testing is still pending.
+  - OCR remains rule-based/text-input driven and does not use a native OCR module.
+  - Food tab and full food/vendor system remain deferred.
+  - Admin/vendor dashboards remain foundation placeholders.
+  - Production realtime chat subscriptions remain deferred.
+  - Some richer filters are UI/client-side because the current schema does not include every dedicated filter column.
+  - Changed-file proof cannot use `git diff` because this workspace has no `.git` directory.
+- Next step: Prompt 4 safety/communication depth, or run real Android QA first for login, role routing, profile loading, post creation, image upload, chat, phone consent, and logout.

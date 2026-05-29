@@ -1,0 +1,17 @@
+---
+description: Supabase security rules for Student Help.
+alwaysApply: true
+---
+
+# Supabase Security
+
+- Use Row Level Security.
+- Use private storage rules for sensitive files.
+- Student card images are private to the owner and admin only.
+- Vendor cannot see student verification documents.
+- Phone numbers are private until an approved consent request.
+- Vendor cannot see student phone unless approved.
+- Vendor can manage only own shop, menu, posts, and related vendor data.
+- Chat messages are visible only to conversation participants and admin where moderation requires it.
+- Never place service role keys in the mobile app.
+

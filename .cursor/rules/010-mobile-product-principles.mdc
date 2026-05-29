@@ -1,0 +1,16 @@
+---
+description: Mobile product principles for Student Help.
+alwaysApply: true
+---
+
+# Mobile Product Principles
+
+- Student Help is Android-first and mobile-first.
+- Student experience is the top priority.
+- Admin and vendor screens should still be usable on mobile.
+- Prioritize demo stability and user safety.
+- Demo screens must feel populated and realistic.
+- Do not add realtime GPS, payment, delivery tracking, or real order management.
+- Food ordering is manual through chat.
+- AI features are optional and must not block core app use.
+

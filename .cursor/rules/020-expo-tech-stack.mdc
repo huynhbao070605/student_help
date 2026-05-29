@@ -1,0 +1,19 @@
+---
+description: Expo React Native technical stack rules.
+alwaysApply: true
+---
+
+# Expo Tech Stack
+
+- Use Expo React Native.
+- Use TypeScript.
+- Use Expo Router.
+- Use Supabase Auth, Postgres, Storage, and Realtime.
+- Use NativeWind or another lightweight styling solution suitable for React Native.
+- Use TanStack Query or a simple clean data fetching layer.
+- Use Zustand only when lightweight shared state is useful.
+- Keep dependencies light.
+- Avoid heavy native modules unless needed.
+- If a native module is required, document Expo development build and EAS Build implications before relying on it.
+- Prefer pnpm. If npm is used, update documentation with the reason and command equivalents.
+

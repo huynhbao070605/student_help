@@ -1,0 +1,14 @@
+---
+description: Demo seed data rules.
+alwaysApply: true
+---
+
+# Demo Seed Data
+
+- All important screens must have realistic fake data.
+- No real private information.
+- Demo data must connect across modules.
+- Customer demo must not show empty screens.
+- Include demo states for pending, approved, rejected, blocked, reported, and review-needed flows where relevant.
+- Keep seed data deterministic and resettable.
+

@@ -1,0 +1,25 @@
+---
+description: Project context discipline for Student Help.
+alwaysApply: true
+---
+
+# Context Discipline
+
+- Always read project context before coding:
+  - `docs/PRD.md`
+  - `docs/MOBILE_TECHNICAL_SPEC.md`
+  - `docs/DECISIONS.md`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - latest entries in `docs/BUILD_JOURNAL.md`
+  - relevant `.cursor/rules`
+  - relevant `.cursor/skills`
+- Obey `docs/DECISIONS.md`.
+- Do not implement outside requested scope.
+- Do not build app features when the prompt only asks for documentation, planning, rules, or memory.
+- After every prompt, update:
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- `docs/BUILD_JOURNAL.md` is append-only.
+

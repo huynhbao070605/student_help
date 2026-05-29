@@ -1,0 +1,17 @@
+---
+description: Student Help mobile UI style rules.
+alwaysApply: true
+---
+
+# Mobile UI Style
+
+- Cute, warm, pastel, Vietnamese, and student-friendly.
+- Build real mobile app screens, not web-like desktop UI.
+- Use bottom tabs for primary student navigation.
+- Use cards, sheets, sticky actions, friendly chips, and clear status badges.
+- Avoid dense tables.
+- Avoid cramped forms.
+- Make touch targets large and thumb-friendly.
+- Use friendly empty states with useful actions.
+- Keep Android performance in mind with lightweight styling and restrained motion.
+

@@ -1,0 +1,16 @@
+---
+description: Android release readiness rules.
+alwaysApply: true
+---
+
+# Android Release Readiness
+
+- App must be prepared for Android APK/AAB.
+- Configure app icon, splash, package name, permissions, and version.
+- Avoid unnecessary permissions.
+- No background location.
+- No realtime GPS.
+- EAS Build instructions must be documented.
+- Preview builds should support APK for customer demos.
+- Production builds should support AAB for Play Store readiness.
+

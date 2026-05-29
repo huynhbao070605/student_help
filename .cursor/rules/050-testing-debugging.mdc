@@ -1,0 +1,18 @@
+---
+description: Testing and debugging rules.
+alwaysApply: true
+---
+
+# Testing And Debugging
+
+Before stopping after implementation, run what is configured and relevant:
+
+- typecheck
+- lint
+- tests
+- Expo start/build checks if possible
+
+Fix all errors introduced by the current prompt.
+
+Report exact results, including commands that were skipped because they are not configured yet.
+
