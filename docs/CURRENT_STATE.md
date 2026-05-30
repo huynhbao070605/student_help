@@ -48,6 +48,10 @@ Phase 5: Final QA polish and Android release readiness implemented.
 - Prompt 5 added Android release readiness config with version `0.5.0`, Android versionCode `5`, runtimeVersion policy, empty Android permissions, and `eas.json` profiles for development APK, preview APK, and production AAB.
 - Prompt 5 updated README and demo guide with prerequisites, env setup, Supabase reset, Android run commands, EAS build commands, troubleshooting, demo script, and known limitations.
 - Prompt 5 ran final QA command checks and documented EAS build blocker: Expo login or `EXPO_TOKEN` is required before remote APK/AAB builds.
+- Android runtime dependency mismatch from Expo SDK native packages was fixed by pinning AsyncStorage, Expo, React, Gesture Handler, Reanimated, Safe Area Context, Image Picker, Linking, and Router to SDK 56-compatible versions.
+- Student core chat handoff now works for Ride Together match requests and Marketplace chat actions: each action creates or reuses a demo conversation, navigates to the Chat tab, and opens the correct chat detail.
+- Chat tab now has an explicit conversation list/detail flow with tappable conversation rows, visible message history, input, send button, image action, quick messages, phone consent, report, and block controls.
+- Core student MVP polish is implemented for login, home, rides, marketplace, chat, and profile: clearer customer-ready copy, loading/empty/error states, button feedback, UIT-focused seed data, and local AsyncStorage persistence for ride, marketplace, and chat state.
 - Mobile auth/session provider, vendor phone-style login mapping, role guards, logout, profile update, avatar upload, student-card upload, and admin verification approve/reject hooks created.
 - Android app config, placeholder icon, adaptive icon, and splash assets created.
 - Backend foundation exists as migrations/seed and app integration hooks; full product flows are not implemented yet.
@@ -60,6 +64,9 @@ Phase 5: Final QA polish and Android release readiness implemented.
 ## In-Progress Features
 
 - Student demo shell is being simplified to focus on core flows: rides, marketplace/document exchange, chat, and profile.
+- Android phone retest is pending after dependency fix and Metro cache clear.
+- Android phone retest is pending for Ride Together -> Xin match -> Chat, Marketplace -> Chat -> Chat, Chat list -> detail, and sending a new message.
+- Android phone retest is pending for the polished MVP customer walkthrough: login, home, ride match, marketplace chat, chat send, reload persistence, and profile.
 
 ## Not-Started Features
 
@@ -130,6 +137,16 @@ Phase 5: Final QA polish and Android release readiness implemented.
 - Prompt 5 `npx eas-cli --version` passed after network approval and returned `eas-cli/20.0.0`.
 - Prompt 5 `npx eas-cli config --profile preview --platform android` and `npx eas-cli build --platform android --profile preview --non-interactive --no-wait` were blocked by missing Expo login or `EXPO_TOKEN`.
 - Prompt 5 Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned Metro process was stopped afterward.
+- 2026-05-30 Android runtime fix checks passed: `npx expo install --check`, `npm run typecheck`, `npm run lint`, and Expo offline Metro smoke check on port `8082`.
+- 2026-05-30 chat handoff fix checks passed: `npm run typecheck`, `npm run lint`, `npx expo install --check`, `npx expo config --type public`, and Expo offline Metro smoke check on port `8082`.
+- 2026-05-30 MVP polish checks passed: `npm run typecheck`, `npm run lint`, `npx expo install --check`, `npx expo config --type public`, no configured root test script found, and Expo offline Metro smoke check on port `8082`.
+- 2026-05-30 student demo polish fixed Ride Together timestamp submission by parsing natural Vietnamese time input into ISO `depart_at` values while keeping a separate display label in local ride state and `schedule_note`.
+- 2026-05-30 core student UI copy was normalized for Vietnamese accents across Home, Ride Together, Marketplace, Chat, Login, Onboarding, Profile, tab labels, and student seed data.
+- 2026-05-30 theme tokens were standardized to the warm cream/coral palette, with shared cards, buttons, badges, search boxes, and tabs updated for a more consistent Android demo look.
+- 2026-05-30 timestamp/theme polish checks passed: `npm run typecheck`, `npm run lint`, `npx expo install --check`, `npx expo config --type public`, no configured root test script found, and Expo offline Metro smoke check on port `8082`.
+- 2026-05-30 chat UUID fix added local-to-remote conversation mapping: mock/local chat IDs stay client-only, Supabase sends create or reuse a real `conversations.id` UUID, insert the current user into `conversation_participants`, and then insert into `messages`.
+- 2026-05-30 guarded student Supabase writes that use UUID columns so mock ride/market/lost-found IDs are not sent to `source_id`, `target_id`, or `id` filters.
+- 2026-05-30 chat UUID fix checks passed: `npm run typecheck`, `npm run lint`, `npx expo install --check`, `npx expo config --type public`, no configured root test script found, and Expo offline Metro smoke check on port `8082`.
 
 ## Known Issues
 
@@ -146,6 +163,7 @@ Phase 5: Final QA polish and Android release readiness implemented.
 - Real Android device QA still needs to be performed outside this workspace.
 - EAS preview APK/AAB cloud builds need Expo login or `EXPO_TOKEN`.
 - Placeholder app icon and splash should be replaced before Play Store submission.
+- After dependency changes, Android devices should restart Expo with a cleared Metro cache using `npx expo start -c` before retesting.
 
 ## Next Recommended Task
 

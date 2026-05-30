@@ -29,9 +29,8 @@ const styles = StyleSheet.create({
     fontWeight: "900"
   },
   action: {
-    color: colors.peachDark,
+    color: colors.primaryDark,
     fontSize: typography.small,
     fontWeight: "800"
   }
 });
-

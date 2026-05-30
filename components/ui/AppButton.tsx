@@ -9,14 +9,16 @@ type AppButtonProps = {
   variant?: "primary" | "secondary" | "ghost";
   icon?: ReactNode;
   style?: ViewStyle;
+  disabled?: boolean;
 };
 
-export function AppButton({ title, onPress, variant = "primary", icon, style }: AppButtonProps) {
+export function AppButton({ title, onPress, variant = "primary", icon, style, disabled = false }: AppButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
+      disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.base, styles[variant], pressed && styles.pressed, style]}
+      style={({ pressed }) => [styles.base, styles[variant], pressed && !disabled && styles.pressed, disabled && styles.disabled, style]}
     >
       {icon}
       <Text style={[styles.text, variant === "ghost" && styles.ghostText]}>{title}</Text>
@@ -31,15 +33,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm,
     justifyContent: "center",
-    minHeight: 48,
-    paddingHorizontal: spacing.lg
+    minHeight: 50,
+    paddingHorizontal: spacing.xl
   },
   primary: {
-    backgroundColor: colors.peach
+    backgroundColor: colors.primary
   },
   secondary: {
-    backgroundColor: colors.butterSoft,
-    borderColor: colors.butter,
+    backgroundColor: colors.card,
+    borderColor: colors.border,
     borderWidth: 1
   },
   ghost: {
@@ -49,6 +51,9 @@ const styles = StyleSheet.create({
     opacity: 0.82,
     transform: [{ scale: 0.99 }]
   },
+  disabled: {
+    opacity: 0.55
+  },
   text: {
     color: colors.ink,
     flexShrink: 1,
@@ -57,6 +62,6 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   ghostText: {
-    color: colors.peachDark
+    color: colors.primaryDark
   }
 });

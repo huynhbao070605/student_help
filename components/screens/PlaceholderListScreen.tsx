@@ -59,7 +59,7 @@ export function PlaceholderListScreen({
           <AppBadge key={label} label={label} tone={index === 0 ? "peach" : "sky"} />
         ))}
       </View>
-      <SectionHeader title="Gợi ý demo" action="Xem tất cả" />
+      <SectionHeader title="Gợi ý nổi bật" action="Xem tất cả" />
       {cards.map((card, index) => (
         <AppCard key={card.title} tone={index % 2 === 0 ? "default" : "mint"}>
           <View style={styles.cardTop}>
@@ -130,4 +130,3 @@ const styles = StyleSheet.create({
     fontWeight: "800"
   }
 });
-

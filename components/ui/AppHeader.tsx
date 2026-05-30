@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs
   },
   eyebrow: {
-    color: colors.peachDark,
+    color: colors.primaryDark,
     fontSize: typography.small,
     fontWeight: "800"
   },
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   subtitle: {
     color: colors.muted,
     fontSize: typography.body,
-    lineHeight: 21
+    lineHeight: 23
   },
   right: {
     flexShrink: 0

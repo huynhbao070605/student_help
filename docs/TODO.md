@@ -106,5 +106,14 @@
 
 ## Immediate Focus
 
+- [x] Fix Android runtime errors caused by Expo SDK native dependency version mismatch.
+- [x] Fix Ride Together and Marketplace actions so they open the correct Chat detail conversation.
+- [x] Fix Chat list rows so tapping a conversation opens detail and sending messages updates the thread.
+- [x] Polish customer-facing MVP flows with loading/empty/error states, UIT-focused sample data, button feedback, and local persistence.
+- [x] Fix Ride Together timestamp submission so natural Vietnamese time input is converted to ISO before saving.
+- [x] Normalize core student UI Vietnamese copy and remove technical presentation wording from the main demo path.
+- [x] Standardize the shared warm cream/coral theme across the core student demo screens.
+- [x] Fix chat sends so mock/local conversation IDs are mapped to real Supabase UUID conversations before inserting messages.
+- [x] Guard student writes so mock post IDs are not sent into Supabase UUID columns.
 - [ ] Keep only the core student demo shell visible: rides, marketplace, chat, profile.
 - [ ] Rehearse core exam/demo flows only: ride booking, document exchange, chat.

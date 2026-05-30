@@ -43,9 +43,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexBasis: "46%",
     gap: spacing.sm,
-    minHeight: 132,
+    minHeight: 142,
     minWidth: 148,
-    padding: spacing.md,
+    padding: spacing.lg,
     ...shadows.card
   },
   pressed: {

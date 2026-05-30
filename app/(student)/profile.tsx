@@ -46,13 +46,13 @@ export default function ProfileScreen() {
 
   const stats = useMemo(() => [
     { label: "Đi chung hoàn tất", value: 4 },
-    { label: "Trao đổi/mượn trả", value: 7 },
+    { label: "Trao đổi, mượn trả", value: 7 },
     { label: "Trả đồ thành công", value: 2 }
   ], []);
 
   async function saveProfile() {
     if (!supabase || !user) {
-      setMessage("Supabase chưa được cấu hình hoặc chưa đăng nhập.");
+      setMessage("Chưa thể lưu hồ sơ lúc này. Vui lòng đăng nhập lại hoặc thử sau.");
       return;
     }
 
@@ -69,7 +69,8 @@ export default function ProfileScreen() {
       .eq("id", user.id);
 
     if (error) {
-      setMessage(error.message);
+      console.error("Failed to save profile", error);
+      setMessage("Chưa lưu được hồ sơ. Vui lòng thử lại.");
     } else {
       await refreshProfile();
       setMessage("Đã lưu hồ sơ.");
@@ -79,7 +80,7 @@ export default function ProfileScreen() {
 
   async function uploadAvatar() {
     if (!supabase || !user) {
-      setMessage("Supabase chưa được cấu hình hoặc chưa đăng nhập.");
+      setMessage("Chưa thể tải ảnh lúc này. Vui lòng đăng nhập lại hoặc thử sau.");
       return;
     }
 
@@ -96,7 +97,8 @@ export default function ProfileScreen() {
       await refreshProfile();
       setMessage("Đã tải ảnh đại diện.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Không tải được ảnh.");
+      console.error("Failed to upload avatar", error);
+      setMessage("Không tải được ảnh. Vui lòng thử lại.");
     } finally {
       setBusy(false);
     }
@@ -104,7 +106,7 @@ export default function ProfileScreen() {
 
   async function uploadStudentCard() {
     if (!supabase || !user) {
-      setMessage("Supabase chưa được cấu hình hoặc chưa đăng nhập.");
+      setMessage("Chưa thể gửi thẻ sinh viên lúc này. Vui lòng đăng nhập lại hoặc thử sau.");
       return;
     }
 
@@ -125,9 +127,10 @@ export default function ProfileScreen() {
       if (error) throw error;
       await supabase.from("profiles").update({ verification_status: "pending" }).eq("id", user.id);
       await refreshProfile();
-      setMessage("Đã gửi thẻ sinh viên. Admin sẽ duyệt thủ công, AI không được duyệt.");
+      setMessage("Đã gửi thẻ sinh viên. Admin sẽ duyệt thủ công.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Không gửi được thẻ sinh viên.");
+      console.error("Failed to upload student card", error);
+      setMessage("Không gửi được thẻ sinh viên. Vui lòng thử lại.");
     } finally {
       setBusy(false);
     }
@@ -146,7 +149,7 @@ export default function ProfileScreen() {
         right={<Avatar name={activeProfile.display_name} size={56} />}
       />
       {!configured ? (
-        <AppErrorState message="Supabase chưa được cấu hình. Màn này đang hiển thị dữ liệu demo và các nút upload sẽ báo lỗi thân thiện." />
+        <AppErrorState message="Chưa kết nối hệ thống đăng nhập. Màn này đang hiển thị dữ liệu gợi ý và các thao tác sẽ báo lỗi thân thiện." />
       ) : null}
       {message ? <AppErrorState title="Thông báo" message={message} /> : null}
 
@@ -155,7 +158,7 @@ export default function ProfileScreen() {
           <VerifiedBadge status={activeProfile.verification_status === "approved" ? "verified" : activeProfile.verification_status === "pending" ? "pending" : "rejected"} />
           <ReputationBadge score={activeProfile.reputation_score} />
         </View>
-        <Text style={styles.title}>Uy tín dùng để tạo niềm tin, không thay thế an toàn cá nhân</Text>
+        <Text style={styles.title}>Uy tín giúp tạo niềm tin, không thay thế an toàn cá nhân</Text>
         <Text style={styles.text}>Điểm tăng khi xác minh sinh viên, đi chung hoàn tất, trao đổi tốt hoặc trả đồ thành công. Báo cáo vi phạm có thể làm giảm điểm sau khi admin duyệt.</Text>
       </AppCard>
 
@@ -189,7 +192,7 @@ export default function ProfileScreen() {
 
       <SectionHeader title="Xác minh sinh viên" />
       <AppCard tone="butter">
-        <Text style={styles.text}>Student card verification là manual admin review only. AI không được duyệt thẻ sinh viên. Vendor không thấy ảnh giấy tờ xác minh.</Text>
+        <Text style={styles.text}>Thẻ sinh viên chỉ được admin duyệt thủ công. Đối tác không thấy ảnh giấy tờ xác minh.</Text>
         <AppButton title="Tải ảnh thẻ sinh viên" variant="secondary" onPress={uploadStudentCard} />
         <AppButton title="Tải ảnh đại diện" variant="ghost" onPress={uploadAvatar} />
       </AppCard>
@@ -199,17 +202,17 @@ export default function ProfileScreen() {
         <AppBadge label="Sinh viên đã xác minh" tone="mint" />
         <AppBadge label="Bạn đi chung tử tế" tone="sky" />
         <AppBadge label="Tìm đồ có tâm" tone="butter" />
-        <AppBadge label="Deal hunter" tone="peach" />
+        <AppBadge label="Săn ưu đãi" tone="peach" />
       </View>
 
       <SectionHeader title="Quyền riêng tư" />
       <AppCard tone="lavender">
-        <Text style={styles.text}>SĐT chỉ hiện sau yêu cầu được duyệt. Student card images chỉ dành cho chủ tài khoản và admin. Không có GPS realtime.</Text>
+        <Text style={styles.text}>SĐT chỉ hiện sau yêu cầu được duyệt. Ảnh thẻ sinh viên chỉ dành cho chủ tài khoản và admin. Không chia sẻ GPS trực tiếp.</Text>
       </AppCard>
 
       <AppButton title="Đăng xuất" variant="secondary" onPress={logout} />
       <Link href="/(auth)/onboarding" asChild>
-        <AppButton title="Về màn onboarding" variant="ghost" />
+        <AppButton title="Về màn chào mừng" variant="ghost" />
       </Link>
     </AppScreen>
   );
@@ -220,9 +223,9 @@ const styles = StyleSheet.create({
   switchRow: { alignItems: "center", flexDirection: "row", gap: spacing.md, justifyContent: "space-between" },
   switchCopy: { flex: 1, gap: spacing.xs },
   title: { color: colors.ink, fontSize: typography.h2, fontWeight: "900" },
-  text: { color: colors.muted, fontSize: typography.body, lineHeight: 21 },
+  text: { color: colors.muted, fontSize: typography.body, lineHeight: 23 },
   statsGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.md },
   statCard: { flexBasis: "30%", flexGrow: 1, minWidth: 100 },
-  statValue: { color: colors.peachDark, fontSize: 28, fontWeight: "900" },
+  statValue: { color: colors.primaryDark, fontSize: 28, fontWeight: "900" },
   metaRows: { gap: spacing.xs }
 });

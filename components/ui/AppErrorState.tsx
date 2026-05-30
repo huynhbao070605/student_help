@@ -9,9 +9,10 @@ type AppErrorStateProps = {
   title?: string;
   message: string;
   actionLabel?: string;
+  onAction?: () => void;
 };
 
-export function AppErrorState({ title = "Có lỗi nhỏ rồi", message, actionLabel }: AppErrorStateProps) {
+export function AppErrorState({ title = "Có lỗi nhỏ rồi", message, actionLabel, onAction }: AppErrorStateProps) {
   return (
     <AppCard style={styles.card}>
       <View style={styles.icon}>
@@ -19,7 +20,7 @@ export function AppErrorState({ title = "Có lỗi nhỏ rồi", message, action
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
-      {actionLabel ? <AppButton title={actionLabel} variant="secondary" /> : null}
+      {actionLabel ? <AppButton title={actionLabel} variant="secondary" onPress={onAction} /> : null}
     </AppCard>
   );
 }

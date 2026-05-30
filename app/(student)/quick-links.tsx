@@ -33,7 +33,7 @@ export default function CampusQuickLinksScreen() {
 
   return (
     <AppScreen>
-      <AppHeader eyebrow="Campus Quick Links" title="Link nhanh campus" subtitle="Nhóm link bản đồ, bus, học vụ, thư viện và an toàn cho demo mobile." />
+      <AppHeader eyebrow="Campus Quick Links" title="Link nhanh campus" subtitle="Nhóm link bản đồ, bus, học vụ, thư viện và an toàn cho sinh viên." />
       <AppSearchBar value={query} onChangeText={setQuery} placeholder="Tìm bus, thư viện, UIT, KTX..." />
       <View style={styles.chips}>
         {filters.map((filter) => (

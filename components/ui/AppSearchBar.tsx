@@ -27,13 +27,13 @@ export function AppSearchBar({ value, placeholder = "Tìm nhanh...", onChangeTex
 const styles = StyleSheet.create({
   wrap: {
     alignItems: "center",
-    backgroundColor: colors.surface,
-    borderColor: colors.line,
+    backgroundColor: colors.card,
+    borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
     flexDirection: "row",
     gap: spacing.sm,
-    minHeight: 48,
+    minHeight: 50,
     paddingHorizontal: spacing.lg
   },
   input: {
@@ -42,4 +42,3 @@ const styles = StyleSheet.create({
     fontSize: typography.body
   }
 });
-

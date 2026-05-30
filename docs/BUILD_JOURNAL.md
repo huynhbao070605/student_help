@@ -831,3 +831,249 @@ This file is append-only. Every prompt must append a new entry.
   - Secondary non-core features still exist in the repository; this change only hides them from the main student demo shell.
   - Real Android device QA is still pending.
 - Next step: Rehearse only the core student flows and stop expanding scope until the exam/demo is over.
+
+## Fix Android Runtime Dependency Mismatch
+
+- Date: 2026-05-30
+- User request summary: User reported Android Expo runtime errors on device: `AsyncStorageError: Native module is null, cannot access legacy storage`, auto refresh session failures, and `Cannot read property 'default' of undefined` from React Native renderer/Animated stack.
+- Scope: Fix runtime dependency compatibility only. No feature expansion and no backend/schema changes.
+- Files changed:
+  - `package.json`
+  - `package-lock.json`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `npm ls expo react react-native @react-native-async-storage/async-storage react-native-reanimated react-native-screens @supabase/supabase-js --depth=0`
+  - `npx expo install --check`
+  - `npx expo install @react-native-async-storage/async-storage expo expo-image-picker expo-linking expo-router react react-native-gesture-handler react-native-reanimated react-native-safe-area-context`
+  - `npm ls expo react react-native @react-native-async-storage/async-storage react-native-reanimated react-native-screens react-native-gesture-handler react-native-safe-area-context --depth=0`
+  - `npx expo install --check`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - Expo offline Metro smoke check on port `8082`
+- Result:
+  - Root cause confirmed as Expo SDK dependency mismatch from `"latest"` package resolution.
+  - `@react-native-async-storage/async-storage` was changed from `3.1.0` to Expo SDK 56 expected `2.2.0`, fixing the likely source of the native module null storage error.
+  - Expo and related native packages were pinned to SDK-compatible versions:
+    - `expo` `~56.0.8`
+    - `expo-image-picker` `~56.0.15`
+    - `expo-linking` `~56.0.13`
+    - `expo-router` `~56.2.8`
+    - `react` `19.2.3`
+    - `react-native-gesture-handler` `~2.31.1`
+    - `react-native-reanimated` `4.3.1`
+    - `react-native-safe-area-context` `~5.7.0`
+  - Renderer/Animated risk from incompatible Gesture Handler/Reanimated versions was reduced by matching Expo SDK expected versions.
+- Checks:
+  - Initial `npx expo install --check` failed and listed incompatible packages.
+  - Final `npx expo install --check` passed with `Dependencies are up to date`.
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned process was stopped afterward.
+- Known issues:
+  - Real Android device retest is still needed after clearing Metro cache and reloading Expo Go.
+  - `npm install` still reports 10 moderate transitive dependency vulnerabilities.
+- Next step: On the Android phone, stop the current Metro session, run `npx expo start -c`, then reopen the app in Expo Go and retest login/core flows.
+
+## Fix Core Chat Handoff Flows
+
+- Date: 2026-05-30
+- User request summary: User reported three UX/logic issues: Ride Together `Xin match` did not open a chat flow, Marketplace `Chat` only showed a message instead of opening chat, and Chat list rows did not clearly open a chat detail screen.
+- Scope: Minimal core-flow fix for Ride Together, Marketplace, and Chat tab navigation/state. No backend/schema rewrite and no realtime GPS.
+- Files changed:
+  - `lib/student/chatStore.ts`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/chat.tsx`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `Get-Content` for bootstrap docs, PRD, technical spec, decisions, current state, TODO, and latest build journal entries.
+  - `Get-Content` for relevant Cursor rules and feature-builder skill.
+  - `rg --files app components lib data constants | rg "(ride|market|chat|message|conversation|layout|demo)"`
+  - `Get-Content -LiteralPath 'app\(student)\_layout.tsx'`
+  - `Get-Content -LiteralPath 'app\(student)\rides.tsx'`
+  - `Get-Content -LiteralPath 'app\(student)\marketplace.tsx'`
+  - `Get-Content -LiteralPath 'app\(student)\chat.tsx'`
+  - `Get-Content -Path data\studentDemo.ts`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - `npx expo install --check`
+  - `npx expo config --type public`
+  - Expo offline Metro smoke check on port `8082`
+- Result:
+  - Added a lightweight shared mock chat store for demo conversations.
+  - Ride Together `Xin match` now creates or finds a `ride-*` conversation, adds the opening message `Mình muốn đi chung tuyến [from] → [to]. Bạn xác nhận giúp mình trước khi đi nhé.` when the thread is empty, marks the ride locally as `Đang chờ phản hồi`, and navigates to `/(student)/chat?conversationId=...`.
+  - Marketplace `Chat` now creates or finds a `marketplace-*` conversation, adds the opening message `Bạn ơi, mình quan tâm bài đăng: [title]. Mình muốn trao đổi thêm.` when the thread is empty, and navigates directly to the chat detail.
+  - Chat tab now uses the shared chat store, supports route-based `conversationId`, has a clear list/detail mode, and conversation rows have `onPress` to open detail.
+  - Chat detail keeps history visible and supports sending text messages into the current conversation.
+- Checks:
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - `npx expo install --check` passed with `Dependencies are up to date`.
+  - `npx expo config --type public` passed and kept Android permissions empty.
+  - Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned process was stopped afterward.
+- Known issues:
+  - Real Android device verification for the four requested flows is still pending outside this workspace.
+  - The handoff uses the app's current lightweight demo state for local conversations; production realtime chat remains deferred.
+
+## Polish Customer MVP Demo
+
+- Date: 2026-05-30
+- User request summary: User asked to polish the working Expo React Native app into a presentable customer MVP across login, Ride Together, match request, Marketplace chat, messages, and profile.
+- Scope: Focused MVP polish only. No full rewrite, no realtime GPS, no payment/order/delivery expansion, and no backend schema changes.
+- Files changed:
+  - `app/(auth)/login.tsx`
+  - `app/(auth)/onboarding.tsx`
+  - `app/(student)/index.tsx`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/chat.tsx`
+  - `app/(student)/profile.tsx`
+  - `app/(student)/lost-found.tsx`
+  - `app/(student)/food.tsx`
+  - `app/(student)/quick-links.tsx`
+  - `components/screens/PlaceholderListScreen.tsx`
+  - `components/ui/AppButton.tsx`
+  - `components/ui/AppEmptyState.tsx`
+  - `components/ui/AppErrorState.tsx`
+  - `components/ui/AppLoadingState.tsx`
+  - `data/studentDemo.ts`
+  - `lib/student/chatStore.ts`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - Required context/document reads for bootstrap, PRD, technical spec, decisions, current state, TODO, and latest build journal.
+  - Relevant UI/feature/QA rule and skill reads.
+  - `rg -n "demo|mock|test|Demo|Mock|Test" app components lib data constants`
+  - `Get-Content` for auth, student home, rides, marketplace, chat, profile, UI components, theme, and student seed data.
+  - `npm run typecheck`
+  - `npm run lint`
+  - `rg -n '"test"|vitest|jest|node --test' package.json .`
+  - `npx expo install --check`
+  - `npx expo config --type public`
+  - Expo offline Metro smoke check on port `8082`
+- Result:
+  - Added disabled-state support to `AppButton`, action callbacks for empty/error states, and cleaner Vietnamese loading/error labels.
+  - Added AsyncStorage persistence for chat conversations, ride posts/request status, and marketplace posts so local state survives app reload.
+  - Ride Together now shows loading/error/empty states, validates required route fields, gives saving feedback, persists local state, and keeps match-request status visible.
+  - Marketplace now shows loading/error/empty states, validates title before posting, gives saving feedback, persists local posts, and opens chat directly.
+  - Chat now shows sync error/empty state, gives feedback for empty sends and successful sends, persists messages, and removes customer-facing "demo" wording from the core chat UI.
+  - Home/login/onboarding/profile and hidden student secondary screens had customer-facing "demo" wording replaced with more natural presentation copy.
+  - Added UIT-focused realistic seed content for rides, marketplace posts, and a recent conversation.
+- Checks:
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - `npx expo install --check` passed with `Dependencies are up to date`.
+  - `npx expo config --type public` passed and Android permissions remain empty.
+  - Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned process was stopped afterward.
+- Known issues:
+  - Real Android device QA is still pending outside this workspace.
+  - Some code identifiers and internal seed IDs still contain `demo`, but core customer-facing student UI copy was cleaned.
+  - `npm install` still reports 10 moderate transitive dependency vulnerabilities from earlier dependency checks.
+- Next step: Run the customer walkthrough on an Android phone with `npx expo start -c`, verify all core flows, then rehearse the short MVP presentation.
+
+## 2026-05-30 - Student Demo Timestamp And UI Polish
+
+- User request summary: Fix Ride Together timestamp inserts, remove customer-facing technical wording, normalize Vietnamese UI accents, polish the shared theme, and re-check the core student demo flows.
+- Files changed:
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/chat.tsx`
+  - `app/(student)/index.tsx`
+  - `app/(student)/_layout.tsx`
+  - `app/(student)/profile.tsx`
+  - `app/(auth)/login.tsx`
+  - `app/(auth)/onboarding.tsx`
+  - `components/ui/AppBadge.tsx`
+  - `components/ui/AppButton.tsx`
+  - `components/ui/AppCard.tsx`
+  - `components/ui/AppHeader.tsx`
+  - `components/ui/AppSearchBar.tsx`
+  - `components/ui/QuickActionCard.tsx`
+  - `components/ui/SectionHeader.tsx`
+  - `constants/theme.ts`
+  - `data/studentDemo.ts`
+  - `lib/student/chatStore.ts`
+  - `lib/student/rideTime.ts`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `rg` searches for ride/chat/marketplace/navigation/theme files and customer-facing technical copy.
+  - `Get-Content` reads for Ride Together, Marketplace, Chat, Home, tab layout, Login, Onboarding, Profile, theme, UI components, and Supabase schema/types.
+  - `npm run typecheck`
+  - `npm run lint`
+  - `Get-Content -Path package.json | Select-String -Pattern '"test"|vitest|jest|node --test'`
+  - `npx expo install --check`
+  - `npx expo config --type public`
+  - Expo offline Metro smoke check on port `8082`
+- Result:
+  - Ride Together create/edit now parses inputs like `07:00 sáng mai` and `sáng nay 07:15` into ISO timestamps before writing `ride_posts.depart_at`.
+  - Ride Together keeps a human label such as `Sáng mai 07:00` in app state and stores a readable label/details string in `schedule_note`; invalid time input shows `Vui lòng chọn ngày giờ hợp lệ.`
+  - Raw Supabase errors from ride, marketplace, chat, and profile writes are logged to console while the UI shows friendly messages.
+  - Core student UI copy and seed data were rewritten with Vietnamese accents, and main demo path wording no longer mentions customer presentation notes.
+  - Shared theme tokens now use the requested cream/coral palette, and cards/buttons/search/tab surfaces use consistent radius, padding, color, and typography.
+- Checks:
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - `npx expo install --check` passed with `Dependencies are up to date`.
+  - `npx expo config --type public` passed.
+  - Expo offline smoke check reached Metro on port `8082` with status `packager-status:running`; the spawned process was stopped afterward.
+- Known issues:
+  - Real Android device QA is still pending outside this workspace.
+  - Hidden/admin/vendor screens still have older support copy in places; the visible student demo path requested here was cleaned.
+- Next step: On Android, run `npx expo start -c` and verify posting a ride with `07:00 sáng mai`, invalid ride time validation, ride match chat handoff, marketplace chat handoff, chat row detail, and message sending.
+- Next step: On Android, run `npx expo start -c` and verify: `Đi chung -> Xin match -> Chat detail`, `Cho đồ -> Chat -> Chat detail`, `Tin nhắn -> row tap -> detail`, and `Gửi -> message appears`.
+
+## 2026-05-30 - Chat UUID Insert Fix
+
+- User request summary: Fix Supabase chat send failures caused by mock/local conversation IDs such as `uit-chat-1` being inserted into UUID columns.
+- Files changed:
+  - `app/(student)/chat.tsx`
+  - `app/(student)/rides.tsx`
+  - `app/(student)/marketplace.tsx`
+  - `app/(student)/lost-found.tsx`
+  - `data/studentDemo.ts`
+  - `lib/student/chatStore.ts`
+  - `lib/student/ids.ts`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - Required context reads: `docs/CONTEXT_BOOTSTRAP.md`, `docs/PRD.md`, `docs/MOBILE_TECHNICAL_SPEC.md`, `docs/DECISIONS.md`, `docs/CURRENT_STATE.md`, `docs/TODO.md`, and latest `docs/BUILD_JOURNAL.md`.
+  - `rg` searches for chat/conversation IDs, UUID columns, and Supabase writes.
+  - `Get-Content` reads for `app/(student)/chat.tsx`, `lib/student/chatStore.ts`, generated Supabase types, and schema/RLS migrations.
+  - `npm run typecheck`
+  - `npm run lint`
+  - `Get-Content -Path package.json | Select-String -Pattern '"test"|vitest|jest|node --test'`
+  - `npx expo install --check`
+  - `npx expo config --type public`
+  - Expo offline Metro smoke check on port `8082`
+- Result:
+  - Added `isUuid` helper for client-side UUID guards.
+  - Chat store now supports an optional `remoteId` so local IDs remain UI-only while Supabase UUID IDs are persisted for later sends.
+  - `sendMessage` now creates a Supabase `conversations` row when the selected chat is local/mock, inserts the current user into `conversation_participants`, stores the resulting UUID in `remoteId`, and inserts the message with that UUID.
+  - Existing Supabase conversations fetched through `conversation_participants` are stored with `remoteId`.
+  - Friendly chat send error remains `Không gửi được tin nhắn. Vui lòng thử lại.` while raw Supabase errors are logged to console.
+  - Ride, Marketplace, and Lost & Found student actions now avoid sending mock IDs into UUID columns such as `source_id` and `id`.
+- Checks:
+  - `npm run typecheck` passed.
+  - `npm run lint` passed.
+  - No root project `test` script is configured in `package.json`.
+  - `npx expo install --check` passed with `Dependencies are up to date`.
+  - `npx expo config --type public` passed.
+  - Expo offline smoke check reached Metro on port `8082` with HTTP 200; the spawned process was stopped afterward.
+- Known issues:
+  - Real Android device QA is still pending outside this workspace.
+  - Mock conversations create a one-participant Supabase conversation on first send; adding the other participant requires a real profile UUID for that student/vendor.
+- Next step: On Android, run `npx expo start -c` and verify `Tin nhắn -> uit-chat-* -> send`, `Chợ đồ -> Nhắn tin -> send`, and `Đi chung -> Xin ghép chuyến -> send` without UUID syntax errors.

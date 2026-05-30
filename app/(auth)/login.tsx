@@ -29,7 +29,8 @@ export default function LoginScreen() {
     try {
       await signInStudent(email, password);
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : "Không đăng nhập được.");
+      console.error("Student login failed", nextError);
+      setError("Không đăng nhập được. Vui lòng kiểm tra tài khoản và thử lại.");
     } finally {
       setSubmitting(false);
     }
@@ -41,7 +42,8 @@ export default function LoginScreen() {
     try {
       await signInVendor(phone, vendorPassword);
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : "Không đăng nhập vendor được.");
+      console.error("Partner login failed", nextError);
+      setError("Không đăng nhập được tài khoản đối tác. Vui lòng thử lại.");
     } finally {
       setSubmitting(false);
     }
@@ -56,12 +58,12 @@ export default function LoginScreen() {
       <AppHeader
         eyebrow="Chào bạn quay lại"
         title="Đăng nhập"
-        subtitle="Sinh viên dùng email/password. Vendor dùng số điện thoại được map sang email nội bộ."
+        subtitle="Sinh viên dùng email. Đối tác dùng số điện thoại đã được cấp."
       />
       {!configured ? (
         <AppErrorState
-          title="Chưa có Supabase"
-          message="Thêm EXPO_PUBLIC_SUPABASE_URL và EXPO_PUBLIC_SUPABASE_ANON_KEY trong .env để đăng nhập thật. Các màn demo vẫn xem được qua link bên dưới."
+          title="Chưa kết nối hệ thống"
+          message="Bạn vẫn có thể xem nhanh các màn chính bên dưới trong lúc cấu hình đăng nhập được chuẩn bị."
         />
       ) : null}
       {profile ? <AppBadge label={`Đã đăng nhập: ${profile.display_name}`} tone="mint" /> : null}
@@ -72,26 +74,26 @@ export default function LoginScreen() {
         <AppButton title={submitting ? "Đang đăng nhập..." : "Đăng nhập sinh viên"} onPress={submitStudent} />
       </AppCard>
       <AppCard tone="butter">
-        <Text style={styles.noteTitle}>Vendor phone-style login</Text>
-        <Text style={styles.note}>Số điện thoại vendor được map thành email dạng 0900000201@vendor.studenthelp.local.</Text>
-        <AppInput label="Số điện thoại vendor" placeholder="0900000201" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
-        <AppInput label="Mật khẩu vendor" placeholder="••••••••" secureTextEntry value={vendorPassword} onChangeText={setVendorPassword} />
-        <AppButton title="Đăng nhập vendor" variant="secondary" onPress={submitVendor} />
+        <Text style={styles.noteTitle}>Đăng nhập đối tác</Text>
+        <Text style={styles.note}>Tài khoản đối tác dùng số điện thoại đã được quản trị viên cấp.</Text>
+        <AppInput label="Số điện thoại đối tác" placeholder="0900000201" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
+        <AppInput label="Mật khẩu đối tác" placeholder="••••••••" secureTextEntry value={vendorPassword} onChangeText={setVendorPassword} />
+        <AppButton title="Đăng nhập đối tác" variant="secondary" onPress={submitVendor} />
       </AppCard>
-      <Text style={styles.note}>Demo seed mặc định: admin@studenthelp.local / admin123456, minhanh@studenthelp.local / student123456, vendor 0900000001 / vendor123456.</Text>
+      <Text style={styles.note}>Tài khoản gợi ý: minhanh@studenthelp.local / student123456, 0900000001 / vendor123456.</Text>
       <Link href="/(auth)/register" asChild>
         <AppButton title="Chưa có tài khoản? Đăng ký" variant="ghost" />
       </Link>
       {!configured ? (
         <>
           <Link href="/(student)" asChild>
-            <AppButton title="Xem shell sinh viên" variant="secondary" />
+            <AppButton title="Xem nhanh màn sinh viên" variant="secondary" />
           </Link>
           <Link href="/(admin)" asChild>
-            <AppButton title="Xem shell admin" variant="ghost" />
+            <AppButton title="Xem nhanh màn quản trị" variant="ghost" />
           </Link>
           <Link href="/(vendor)" asChild>
-            <AppButton title="Xem shell vendor" variant="ghost" />
+            <AppButton title="Xem nhanh màn đối tác" variant="ghost" />
           </Link>
         </>
       ) : null}
@@ -108,6 +110,6 @@ const styles = StyleSheet.create({
   note: {
     color: colors.muted,
     fontSize: typography.body,
-    lineHeight: 21
+    lineHeight: 23
   }
 });

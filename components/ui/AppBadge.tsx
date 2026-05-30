@@ -8,7 +8,7 @@ type AppBadgeProps = {
 };
 
 const badgeTones = {
-  peach: { bg: colors.surfaceWarm, fg: colors.peachDark },
+  peach: { bg: colors.surfaceWarm, fg: colors.primaryDark },
   mint: { bg: colors.mintSoft, fg: colors.success },
   butter: { bg: colors.butterSoft, fg: colors.warning },
   lavender: { bg: colors.lavenderSoft, fg: "#7057C8" },
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs
   },
   text: {
-    fontSize: typography.tiny,
+    fontSize: typography.small,
     fontWeight: "900",
     flexShrink: 1
   }

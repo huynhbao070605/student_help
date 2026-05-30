@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { Linking, StyleSheet, Text, View } from "react-native";
 
@@ -7,8 +9,11 @@ import {
   AppBottomSheet,
   AppButton,
   AppCard,
+  AppEmptyState,
+  AppErrorState,
   AppHeader,
   AppInput,
+  AppLoadingState,
   AppScreen,
   AppSearchBar,
   ReputationBadge,
@@ -18,9 +23,15 @@ import {
 import { colors, spacing, typography } from "@/constants/theme";
 import { demoRides, type RidePost } from "@/data/studentDemo";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { ensureRideConversation } from "@/lib/student/chatStore";
+import { isUuid } from "@/lib/student/ids";
+import { parseRideDeparture } from "@/lib/student/rideTime";
 import { supabase } from "@/lib/supabase/client";
 
 const filterLabels = ["Đi từ", "Đến", "Khu vực", "Trường", "Thời gian", "Phương tiện", "Vai trò", "Giới tính", "Đã xác minh", "Uy tín tối thiểu", "Còn chỗ", "Mới nhất"];
+
+const RIDES_STORAGE_KEY = "student-help:rides:v2";
+const RIDE_REQUESTS_STORAGE_KEY = "student-help:ride-requests:v2";
 
 const emptyForm = {
   origin: "",
@@ -36,6 +47,7 @@ const emptyForm = {
 };
 
 export default function RideListScreen() {
+  const router = useRouter();
   const { profile } = useAuth();
   const [rides, setRides] = useState<RidePost[]>(demoRides);
   const [query, setQuery] = useState("");
@@ -48,6 +60,45 @@ export default function RideListScreen() {
   const [openOnly, setOpenOnly] = useState(true);
   const [minRep, setMinRep] = useState("0");
   const [visibleLimit, setVisibleLimit] = useState(16);
+  const [requestedRideIds, setRequestedRideIds] = useState<string[]>([]);
+  const [loadingLocal, setLoadingLocal] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadLocalRides() {
+      try {
+        const [storedRides, storedRequests] = await Promise.all([
+          AsyncStorage.getItem(RIDES_STORAGE_KEY),
+          AsyncStorage.getItem(RIDE_REQUESTS_STORAGE_KEY)
+        ]);
+        if (!mounted) return;
+        if (storedRides) {
+          const parsed = JSON.parse(storedRides) as RidePost[];
+          if (Array.isArray(parsed)) setRides(parsed);
+        }
+        if (storedRequests) {
+          const parsed = JSON.parse(storedRequests) as string[];
+          if (Array.isArray(parsed)) setRequestedRideIds(parsed);
+        }
+      } catch {
+        if (mounted) setLoadError("Không đọc được dữ liệu đã lưu trên máy. App vẫn dùng danh sách gợi ý sẵn có.");
+      } finally {
+        if (mounted) setLoadingLocal(false);
+      }
+    }
+    void loadLocalRides();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (loadingLocal) return;
+    void AsyncStorage.setItem(RIDES_STORAGE_KEY, JSON.stringify(rides));
+    void AsyncStorage.setItem(RIDE_REQUESTS_STORAGE_KEY, JSON.stringify(requestedRideIds));
+  }, [loadingLocal, requestedRideIds, rides]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -72,14 +123,14 @@ export default function RideListScreen() {
           roleType: "Tìm bạn đi cùng",
           genderPreference: "Không yêu cầu",
           seatsAvailable: row.seats_available ?? 1,
-          safetyNote: row.safety_note ?? "Chỉ xác nhận qua chat, không dùng GPS realtime.",
-          locationNote: row.schedule_note ?? "Hẹn ở điểm công cộng.",
+          safetyNote: row.safety_note ?? "Chỉ xác nhận qua chat, không chia sẻ GPS trực tiếp.",
+          locationNote: "Hẹn ở điểm công cộng.",
           verified: true,
           reputation: 70,
           status: row.status,
           createdAt: row.created_at
         })));
-      });
+      }, () => setLoadError("Chưa đồng bộ được danh sách đi chung mới nhất. Bạn vẫn có thể dùng dữ liệu đã lưu trên máy."));
   }, [profile]);
 
   const visibleRides = useMemo(() => {
@@ -106,7 +157,7 @@ export default function RideListScreen() {
       destination: ride.destination,
       campus: ride.campus,
       area: ride.area,
-      departAt: ride.departAt,
+      departAt: ride.scheduleNote || ride.departAt,
       transportType: ride.transportType,
       roleType: ride.roleType,
       genderPreference: ride.genderPreference,
@@ -117,61 +168,78 @@ export default function RideListScreen() {
   }
 
   async function saveRide() {
+    if (!form.origin.trim() || !form.destination.trim()) {
+      setMessage("Nhập điểm đi và điểm đến để bài đi chung rõ ràng hơn.");
+      return;
+    }
+
+    const parsedDeparture = parseRideDeparture(form.departAt);
+    if (!parsedDeparture) {
+      setMessage("Vui lòng chọn ngày giờ hợp lệ.");
+      return;
+    }
+
+    setSaving(true);
     const now = new Date().toISOString();
-    const ownerId = profile?.id ?? "demo-student";
+    const ownerId = profile?.id ?? "local-student";
     const nextRide: RidePost = {
       id: editing?.id ?? `local-ride-${Date.now()}`,
       ownerId,
       ownerName: profile?.display_name ?? "Bạn",
-      origin: form.origin || "KTX Khu B",
-      destination: form.destination || "ĐH KHTN",
-      campus: form.campus,
-      area: form.area,
-      departAt: form.departAt || now,
-      scheduleNote: form.locationNote || "Hẹn giờ qua chat",
-      transportType: form.transportType,
-      roleType: form.roleType,
-      genderPreference: form.genderPreference,
+      origin: form.origin.trim(),
+      destination: form.destination.trim(),
+      campus: form.campus.trim() || "VNU-HCM",
+      area: form.area.trim() || "Làng Đại học",
+      departAt: parsedDeparture.iso,
+      scheduleNote: parsedDeparture.label,
+      transportType: form.transportType.trim() || "Xe máy",
+      roleType: form.roleType.trim() || "Tìm bạn đi cùng",
+      genderPreference: form.genderPreference.trim() || "Không yêu cầu",
       seatsAvailable: 1,
-      safetyNote: form.safetyNote || "Chỉ gặp ở nơi công cộng, không chia sẻ GPS realtime.",
-      locationNote: form.locationNote || "Hẹn ở cổng trường/KTX.",
+      safetyNote: form.safetyNote.trim() || "Chỉ gặp ở nơi công cộng, không chia sẻ GPS trực tiếp.",
+      locationNote: form.locationNote.trim() || "Hẹn ở cổng trường/KTX.",
       verified: profile?.verification_status === "approved",
       reputation: profile?.reputation_score ?? 50,
       status: "active",
       createdAt: editing?.createdAt ?? now
     };
 
-    if (supabase && profile) {
-      const payload = {
-        owner_id: profile.id,
-        origin: nextRide.origin,
-        destination: nextRide.destination,
-        campus: nextRide.campus,
-        depart_at: nextRide.departAt,
-        schedule_note: `${nextRide.scheduleNote} · ${nextRide.locationNote} · ${nextRide.roleType} · ${nextRide.genderPreference}`,
-        transport_type: nextRide.transportType,
-        seats_available: 1,
-        safety_note: nextRide.safetyNote,
-        status: "active" as const
-      };
-      const request = editing
-        ? supabase.from("ride_posts").update(payload).eq("id", editing.id).eq("owner_id", profile.id)
-        : supabase.from("ride_posts").insert(payload).select("id").single();
-      const { data, error } = await request;
-      if (error) {
-        setMessage(error.message);
-        return;
+    try {
+      if (supabase && profile) {
+        const payload = {
+          owner_id: profile.id,
+          origin: nextRide.origin,
+          destination: nextRide.destination,
+          campus: nextRide.campus,
+          depart_at: parsedDeparture.iso,
+          schedule_note: `${parsedDeparture.label} · ${nextRide.locationNote} · ${nextRide.roleType} · ${nextRide.genderPreference}`,
+          transport_type: nextRide.transportType,
+          seats_available: 1,
+          safety_note: nextRide.safetyNote,
+          status: "active" as const
+        };
+        const request = editing && isUuid(editing.id)
+          ? supabase.from("ride_posts").update(payload).eq("id", editing.id).eq("owner_id", profile.id)
+          : supabase.from("ride_posts").insert(payload).select("id").single();
+        const { data, error } = await request;
+        if (error) {
+          console.error("Failed to save ride post", error);
+          setMessage("Chưa lưu được tuyến đi chung. Vui lòng thử lại.");
+          return;
+        }
+        if ((!editing || !isUuid(editing.id)) && data && "id" in data) nextRide.id = data.id;
       }
-      if (!editing && data && "id" in data) nextRide.id = data.id;
-    }
 
-    setRides((current) => editing ? current.map((ride) => ride.id === editing.id ? nextRide : ride) : [nextRide, ...current]);
-    setMessage(editing ? "Đã cập nhật bài đi chung." : "Đã đăng bài đi chung.");
-    setFormOpen(false);
+      setRides((current) => editing ? current.map((ride) => ride.id === editing.id ? nextRide : ride) : [nextRide, ...current]);
+      setMessage(editing ? "Đã cập nhật bài đi chung." : "Đã đăng bài đi chung.");
+      setFormOpen(false);
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function deleteRide(ride: RidePost) {
-    if (supabase && profile && ride.ownerId === profile.id) {
+    if (supabase && profile && ride.ownerId === profile.id && isUuid(ride.id)) {
       await supabase.from("ride_posts").delete().eq("id", ride.id).eq("owner_id", profile.id);
     }
     setRides((current) => current.filter((item) => item.id !== ride.id));
@@ -179,8 +247,8 @@ export default function RideListScreen() {
   }
 
   async function requestMatch(ride: RidePost) {
-    if (supabase && profile) {
-      await supabase.from("matches").insert({
+    if (supabase && profile && isUuid(ride.id)) {
+      const { error } = await supabase.from("matches").insert({
         source_type: "ride_post",
         source_id: ride.id,
         target_type: "profile",
@@ -188,13 +256,17 @@ export default function RideListScreen() {
         score: 86,
         reason: `Tuyến ${ride.origin} → ${ride.destination}, ${ride.transportType}`
       });
+      if (error) console.error("Failed to create ride match request", error);
     }
-    setMessage(`Đã gửi yêu cầu đi chung. Nhớ đọc ghi chú an toàn: ${ride.safetyNote}`);
+    const conversationId = ensureRideConversation(ride);
+    setRequestedRideIds((current) => current.includes(ride.id) ? current : [ride.id, ...current]);
+    setMessage("Đã gửi yêu cầu ghép chuyến. Đang chờ phản hồi qua chat.");
+    router.push({ pathname: "/(student)/chat", params: { conversationId } });
   }
 
   async function completeRide(ride: RidePost) {
-    if (supabase && profile) {
-      await supabase.from("reputation_events").insert({
+    if (supabase && profile && isUuid(ride.id)) {
+      const { error } = await supabase.from("reputation_events").insert({
         user_id: profile.id,
         event_type: "successful_meetup",
         points: 5,
@@ -202,13 +274,16 @@ export default function RideListScreen() {
         source_id: ride.id,
         note: "Hoàn tất một lượt đi chung an toàn."
       });
+      if (error) console.error("Failed to record ride completion", error);
     }
     setMessage("Đã ghi nhận hoàn tất. +5 uy tín sẽ hiển thị sau khi đồng bộ.");
   }
 
   return (
     <AppScreen>
-      <AppHeader eyebrow="Ride Together" title="Đi chung" subtitle="Tìm bạn cùng tuyến bằng điểm hẹn và thời gian. Không realtime GPS." />
+      <AppHeader eyebrow="Đi chung" title="Đi chung" subtitle="Tìm bạn cùng tuyến bằng điểm hẹn và thời gian. Không chia sẻ GPS trực tiếp." />
+      {loadingLocal ? <AppLoadingState label="Đang mở danh sách đi chung..." /> : null}
+      {loadError ? <AppErrorState title="Dùng dữ liệu trên máy" message={loadError} actionLabel="Đã hiểu" onAction={() => setLoadError(null)} /> : null}
       {message ? <AppCard tone="butter"><Text style={styles.text}>{message}</Text></AppCard> : null}
       <View style={styles.searchRow}>
         <View style={styles.search}>
@@ -217,12 +292,15 @@ export default function RideListScreen() {
         <AppButton title="Lọc" variant="secondary" icon={<Ionicons color={colors.ink} name="options" size={18} />} onPress={() => setFilterOpen(true)} style={styles.filterButton} />
       </View>
       <View style={styles.chips}>
-        <AppBadge label="Không GPS realtime" tone="mint" />
+        <AppBadge label="Không chia sẻ GPS" tone="mint" />
         <AppBadge label="Có Google Maps" tone="sky" />
         <AppBadge label="Ghi chú an toàn" tone="butter" />
       </View>
       <AppButton title="Đăng tuyến đi chung" onPress={openCreate} />
       <SectionHeader title={`${visibleRides.length} gợi ý phù hợp`} action="Mới nhất" />
+      {!loadingLocal && visibleRides.length === 0 ? (
+        <AppEmptyState title="Chưa có tuyến phù hợp" message="Thử xoá bớt bộ lọc hoặc đăng tuyến bạn muốn đi quanh UIT/KTX." actionLabel="Đăng tuyến mới" onAction={openCreate} />
+      ) : null}
       {visibleRides.map((ride) => {
         const own = ride.ownerId === profile?.id;
         return (
@@ -233,15 +311,16 @@ export default function RideListScreen() {
                 <VerifiedBadge status={ride.verified ? "verified" : "pending"} />
                 <ReputationBadge score={ride.reputation} />
                 <AppBadge label={ride.transportType} tone="sky" />
+                {requestedRideIds.includes(ride.id) ? <AppBadge label="Đang chờ phản hồi" tone="butter" /> : null}
               </View>
             </View>
             <Text style={styles.text}>{ride.scheduleNote}</Text>
             <Text style={styles.text}>Điểm hẹn: {ride.locationNote}</Text>
             <Text style={styles.text}>Vai trò: {ride.roleType} · Ưu tiên: {ride.genderPreference}</Text>
-            <Text style={styles.safety}>Sau khi match: {ride.safetyNote}</Text>
+            <Text style={styles.safety}>Sau khi ghép chuyến: {ride.safetyNote}</Text>
             <View style={styles.actions}>
               <AppButton title="Mở Maps" variant="secondary" onPress={() => Linking.openURL(`https://maps.google.com/?q=${encodeURIComponent(`${ride.origin} ${ride.destination}`)}`)} />
-              <AppButton title="Xin match" variant="ghost" onPress={() => requestMatch(ride)} />
+              <AppButton title="Xin ghép chuyến" variant="ghost" onPress={() => requestMatch(ride)} />
               <AppButton title="Hoàn tất" variant="ghost" onPress={() => completeRide(ride)} />
               {own ? <AppButton title="Sửa" variant="secondary" onPress={() => openEdit(ride)} /> : null}
               {own ? <AppButton title="Xoá" variant="ghost" onPress={() => deleteRide(ride)} /> : null}
@@ -252,12 +331,12 @@ export default function RideListScreen() {
 
       <AppBottomSheet visible={filterOpen} title="Bộ lọc đi chung" onClose={() => setFilterOpen(false)}>
         {visibleRides.length >= visibleLimit ? (
-          <AppButton title="Tai them tuyen" variant="secondary" onPress={() => setVisibleLimit((value) => value + 12)} />
+          <AppButton title="Tải thêm tuyến" variant="secondary" onPress={() => setVisibleLimit((value) => value + 12)} />
         ) : null}
         {filterLabels.map((label, index) => <AppBadge key={label} label={label} tone={index % 3 === 0 ? "peach" : index % 3 === 1 ? "sky" : "mint"} />)}
         <AppInput label="Uy tín tối thiểu" value={minRep} onChangeText={setMinRep} keyboardType="number-pad" />
         <AppButton title={verifiedOnly ? "Đang lọc: đã xác minh" : "Chỉ người đã xác minh"} variant="secondary" onPress={() => setVerifiedOnly((value) => !value)} />
-        <AppButton title={openOnly ? "Đang lọc: còn chỗ" : "Chỉ bài còn match"} variant="secondary" onPress={() => setOpenOnly((value) => !value)} />
+        <AppButton title={openOnly ? "Đang lọc: còn chỗ" : "Chỉ bài còn chỗ"} variant="secondary" onPress={() => setOpenOnly((value) => !value)} />
         <AppButton title="Áp dụng bộ lọc" onPress={() => setFilterOpen(false)} />
       </AppBottomSheet>
 
@@ -266,13 +345,13 @@ export default function RideListScreen() {
         <AppInput label="Đến" value={form.destination} onChangeText={(destination) => setForm((value) => ({ ...value, destination }))} />
         <AppInput label="Khu vực" value={form.area} onChangeText={(area) => setForm((value) => ({ ...value, area }))} />
         <AppInput label="Trường/campus" value={form.campus} onChangeText={(campus) => setForm((value) => ({ ...value, campus }))} />
-        <AppInput label="Thời gian" value={form.departAt} onChangeText={(departAt) => setForm((value) => ({ ...value, departAt }))} placeholder="VD: 07:10 sáng mai" />
+        <AppInput label="Thời gian" value={form.departAt} onChangeText={(departAt) => setForm((value) => ({ ...value, departAt }))} placeholder="VD: 07:00 sáng mai" />
         <AppInput label="Phương tiện" value={form.transportType} onChangeText={(transportType) => setForm((value) => ({ ...value, transportType }))} />
         <AppInput label="Vai trò" value={form.roleType} onChangeText={(roleType) => setForm((value) => ({ ...value, roleType }))} />
         <AppInput label="Ưu tiên giới tính" value={form.genderPreference} onChangeText={(genderPreference) => setForm((value) => ({ ...value, genderPreference }))} />
         <AppInput label="Ghi chú điểm hẹn" value={form.locationNote} onChangeText={(locationNote) => setForm((value) => ({ ...value, locationNote }))} />
-        <AppInput label="Ghi chú an toàn sau match" value={form.safetyNote} onChangeText={(safetyNote) => setForm((value) => ({ ...value, safetyNote }))} multiline />
-        <AppButton title={editing ? "Lưu thay đổi" : "Đăng bài"} onPress={saveRide} />
+        <AppInput label="Ghi chú an toàn sau khi ghép chuyến" value={form.safetyNote} onChangeText={(safetyNote) => setForm((value) => ({ ...value, safetyNote }))} multiline />
+        <AppButton title={saving ? "Đang lưu..." : editing ? "Lưu thay đổi" : "Đăng bài"} onPress={saveRide} disabled={saving} />
       </AppBottomSheet>
     </AppScreen>
   );
@@ -281,11 +360,11 @@ export default function RideListScreen() {
 const styles = StyleSheet.create({
   searchRow: { alignItems: "center", flexDirection: "row", gap: spacing.sm },
   search: { flex: 1 },
-  filterButton: { minHeight: 48, paddingHorizontal: spacing.md },
+  filterButton: { minHeight: 50, paddingHorizontal: spacing.md },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   cardTop: { gap: spacing.sm },
   title: { color: colors.ink, fontSize: typography.h2, fontWeight: "900" },
-  text: { color: colors.muted, fontSize: typography.body, lineHeight: 21 },
-  safety: { color: colors.ink, fontSize: typography.small, fontWeight: "800", lineHeight: 19 },
+  text: { color: colors.muted, fontSize: typography.body, lineHeight: 23 },
+  safety: { color: colors.ink, fontSize: typography.small, fontWeight: "800", lineHeight: 20 },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm }
 });

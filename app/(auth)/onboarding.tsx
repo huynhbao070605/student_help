@@ -10,22 +10,22 @@ export default function OnboardingScreen() {
     <AppScreen contentStyle={styles.content}>
       <View style={styles.hero}>
         <View style={styles.logoBubble}>
-          <Ionicons color={colors.peachDark} name="school" size={42} />
+          <Ionicons color={colors.primaryDark} name="school" size={42} />
         </View>
         <AppBadge label="VNU-HCM · Thủ Đức · Dĩ An" tone="peach" />
         <Text style={styles.title}>Student Help</Text>
         <Text style={styles.subtitle}>
-          Bạn học dễ thương để đi chung, tìm đồ, săn deal và chat an toàn quanh làng đại học.
+          Bạn học dễ thương để đi chung, tìm đồ, săn ưu đãi và nhắn tin an toàn quanh Làng Đại học.
         </Text>
       </View>
       <View style={styles.grid}>
-        <QuickActionCard title="Xác minh thủ công" subtitle="Admin duyệt thẻ SV, AI không tự duyệt" icon="shield-checkmark" tone="mint" />
-        <QuickActionCard title="Không GPS realtime" subtitle="Tôn trọng riêng tư, chỉ dùng điểm hẹn" icon="location" tone="butter" />
+        <QuickActionCard title="Xác minh thủ công" subtitle="Admin duyệt thẻ sinh viên, AI không tự duyệt" icon="shield-checkmark" tone="mint" />
+        <QuickActionCard title="Không chia sẻ GPS" subtitle="Tôn trọng riêng tư, chỉ dùng điểm hẹn" icon="location" tone="butter" />
       </View>
       <AppCard tone="lavender">
         <AppHeader
-          title="Demo vẫn đầy đủ"
-          subtitle="Màn hình nền đã có card, chip, filter sheet và nhãn tiếng Việt để khách hàng xem không bị trống."
+          title="Sẵn sàng đồng hành"
+          subtitle="Tìm bạn đi chung, trao đổi đồ học tập và chat xác nhận trước khi gặp."
         />
       </AppCard>
       <View style={styles.actions}>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   logoBubble: {
     alignItems: "center",
     backgroundColor: colors.surfaceWarm,
-    borderColor: colors.surface,
+    borderColor: colors.card,
     borderRadius: 34,
     borderWidth: 3,
     height: 68,
@@ -61,14 +61,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: colors.ink,
-    fontSize: 34,
+    fontSize: typography.title,
     fontWeight: "900",
     textAlign: "center"
   },
   subtitle: {
     color: colors.muted,
     fontSize: typography.body,
-    lineHeight: 22,
+    lineHeight: 23,
     maxWidth: 320,
     textAlign: "center"
   },
@@ -80,4 +80,3 @@ const styles = StyleSheet.create({
     gap: spacing.md
   }
 });
-

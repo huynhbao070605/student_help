@@ -6,7 +6,7 @@ type AppLoadingStateProps = {
   label?: string;
 };
 
-export function AppLoadingState({ label = "Dang chuan bi du lieu..." }: AppLoadingStateProps) {
+export function AppLoadingState({ label = "Đang chuẩn bị dữ liệu..." }: AppLoadingStateProps) {
   return (
     <View style={styles.wrap}>
       <ActivityIndicator color={colors.peachDark} />

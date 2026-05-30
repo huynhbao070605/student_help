@@ -160,7 +160,7 @@ export default function FoodDealsScreen() {
             <View style={styles.chips}>
               {selectedItem.options.map((option) => <AppBadge key={option} label={option} tone="sky" />)}
             </View>
-            <AppButton title="Gửi trong chat demo" onPress={() => setSelectedItem(null)} />
+            <AppButton title="Gửi trong chat" onPress={() => setSelectedItem(null)} />
           </>
         ) : null}
       </AppBottomSheet>

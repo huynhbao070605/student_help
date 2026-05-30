@@ -9,7 +9,7 @@ type AppCardProps = PropsWithChildren<{
 }>;
 
 const toneMap = {
-  default: colors.surface,
+  default: colors.card,
   peach: colors.surfaceWarm,
   mint: colors.mintSoft,
   butter: colors.butterSoft,
@@ -27,8 +27,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     borderWidth: 1,
     gap: spacing.md,
-    padding: spacing.lg,
+    padding: spacing.xl,
     ...shadows.card
   }
 });
-

@@ -9,9 +9,10 @@ type AppEmptyStateProps = {
   title: string;
   message: string;
   actionLabel?: string;
+  onAction?: () => void;
 };
 
-export function AppEmptyState({ title, message, actionLabel }: AppEmptyStateProps) {
+export function AppEmptyState({ title, message, actionLabel, onAction }: AppEmptyStateProps) {
   return (
     <AppCard tone="butter" style={styles.card}>
       <View style={styles.icon}>
@@ -19,7 +20,7 @@ export function AppEmptyState({ title, message, actionLabel }: AppEmptyStateProp
       </View>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
-      {actionLabel ? <AppButton title={actionLabel} variant="secondary" /> : null}
+      {actionLabel ? <AppButton title={actionLabel} variant="secondary" onPress={onAction} /> : null}
     </AppCard>
   );
 }

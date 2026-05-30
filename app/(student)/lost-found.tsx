@@ -16,6 +16,7 @@ import {
 import { colors, spacing, typography } from "@/constants/theme";
 import { demoLostFound, demoSavedSearches, type LostFoundPost } from "@/data/studentDemo";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { isUuid } from "@/lib/student/ids";
 import { analyzePrivacyText, smartFilterLostFound } from "@/lib/student/privacySearch";
 import { pickImageFromLibrary, uploadLocalImage } from "@/lib/storage/uploadImage";
 import { supabase } from "@/lib/supabase/client";
@@ -170,15 +171,16 @@ export default function LostFoundListScreen() {
         ocr_evidence: nextPost.ocrEvidence,
         status: "active" as const
       };
-      const request = editing
+      const request = editing && isUuid(editing.id)
         ? supabase.from("lost_found_posts").update(payload).eq("id", editing.id).eq("owner_id", profile.id)
         : supabase.from("lost_found_posts").insert(payload).select("id").single();
       const { data, error } = await request;
       if (error) {
-        setMessage(error.message);
+        console.error("Failed to save lost and found post", error);
+        setMessage("Chưa lưu được bài tìm đồ. Vui lòng thử lại.");
         return;
       }
-      if (!editing && data && "id" in data) nextPost.id = data.id;
+      if ((!editing || !isUuid(editing.id)) && data && "id" in data) nextPost.id = data.id;
     }
 
     setPosts((current) => editing ? current.map((post) => post.id === editing.id ? nextPost : post) : [nextPost, ...current]);
@@ -187,7 +189,7 @@ export default function LostFoundListScreen() {
   }
 
   async function deletePost(post: LostFoundPost) {
-    if (supabase && profile && post.ownerId === profile.id) {
+    if (supabase && profile && post.ownerId === profile.id && isUuid(post.id)) {
       await supabase.from("lost_found_posts").delete().eq("id", post.id).eq("owner_id", profile.id);
     }
     setPosts((current) => current.filter((item) => item.id !== post.id));
@@ -221,7 +223,7 @@ export default function LostFoundListScreen() {
       });
     }
     setSavedSearches((current) => [next, ...current]);
-    setMessage("Đã lưu tìm kiếm. Chưa bật push notification trong demo này.");
+    setMessage("Đã lưu tìm kiếm. Thông báo đẩy sẽ được bật ở phiên bản sau.");
   }
 
   return (
@@ -297,7 +299,7 @@ export default function LostFoundListScreen() {
         <AppInput label="Màu" value={form.color} onChangeText={(color) => setForm((value) => ({ ...value, color }))} />
         <AppInput label="Hãng/đặc điểm" value={form.brand} onChangeText={(brand) => setForm((value) => ({ ...value, brand }))} />
         <AppInput label="Vị trí" value={form.locationText} onChangeText={(locationText) => setForm((value) => ({ ...value, locationText }))} />
-        <AppInput label="Nội dung OCR đọc được (demo fallback)" value={form.privacyText} onChangeText={(privacyText) => setForm((value) => ({ ...value, privacyText }))} multiline />
+        <AppInput label="Nội dung OCR đọc được" value={form.privacyText} onChangeText={(privacyText) => setForm((value) => ({ ...value, privacyText }))} multiline />
         <AppCard tone={privacyRisk.status === "auto_rejected" ? "peach" : privacyRisk.status === "admin_review" ? "butter" : "mint"}>
           <Text style={styles.title}>Privacy score: {privacyRisk.score}%</Text>
           <Text style={styles.text}>{privacyRisk.status === "auto_pass" ? "Auto pass" : privacyRisk.status === "admin_review" ? "Cần admin review nếu OCR mơ hồ." : "Auto reject chỉ khi bằng chứng mạnh."}</Text>
