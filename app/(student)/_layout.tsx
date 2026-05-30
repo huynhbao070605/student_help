@@ -36,13 +36,13 @@ export default function StudentTabsLayout() {
         }
       }}
     >
-      <Tabs.Screen name="index" options={{ title: "Trang chủ", tabBarIcon: tabIcon("home") }} />
-      <Tabs.Screen name="rides" options={{ title: "Đi chung", tabBarIcon: tabIcon("bicycle") }} />
-      <Tabs.Screen name="lost-found" options={{ title: "Tìm đồ", tabBarIcon: tabIcon("search") }} />
-      <Tabs.Screen name="food" options={{ title: "Đồ ăn", tabBarIcon: tabIcon("fast-food") }} />
-      <Tabs.Screen name="chat" options={{ title: "Tin nhắn", tabBarIcon: tabIcon("chatbubbles") }} />
-      <Tabs.Screen name="profile" options={{ title: "Cá nhân", tabBarIcon: tabIcon("person-circle") }} />
-      <Tabs.Screen name="marketplace" options={{ href: null }} />
+      <Tabs.Screen name="index" options={{ title: "Trang chu", tabBarIcon: tabIcon("home") }} />
+      <Tabs.Screen name="rides" options={{ title: "Di chung", tabBarIcon: tabIcon("bicycle") }} />
+      <Tabs.Screen name="marketplace" options={{ title: "Cho do", tabBarIcon: tabIcon("storefront") }} />
+      <Tabs.Screen name="chat" options={{ title: "Tin nhan", tabBarIcon: tabIcon("chatbubbles") }} />
+      <Tabs.Screen name="profile" options={{ title: "Ca nhan", tabBarIcon: tabIcon("person-circle") }} />
+      <Tabs.Screen name="lost-found" options={{ href: null }} />
+      <Tabs.Screen name="food" options={{ href: null }} />
       <Tabs.Screen name="services" options={{ href: null }} />
       <Tabs.Screen name="quick-links" options={{ href: null }} />
     </Tabs>

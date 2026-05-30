@@ -103,3 +103,8 @@
 - [x] Demo guide completion.
 - [x] Known limitations review.
 - [ ] Customer demo rehearsal.
+
+## Immediate Focus
+
+- [ ] Keep only the core student demo shell visible: rides, marketplace, chat, profile.
+- [ ] Rehearse core exam/demo flows only: ride booking, document exchange, chat.

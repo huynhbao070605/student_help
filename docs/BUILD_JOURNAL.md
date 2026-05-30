@@ -798,3 +798,36 @@ This file is append-only. Every prompt must append a new entry.
   - OCR remains rule-based and Expo-safe; native OCR is not included.
   - Production realtime chat subscriptions remain deferred.
 - Next step: Run real Android device QA, then run the EAS preview APK build after Expo credentials are available.
+
+## Simplify Student Demo
+
+- Date: 2026-05-30
+- User request summary: User is close to exams and asked to skip unnecessary features and sample-heavy demo surfaces, focusing mainly on core flows such as ride booking, buying/selling, and exchanging documents.
+- Scope: Simplify the visible student demo shell only. No backend/schema changes and no destructive removal of existing secondary routes.
+- Files changed:
+  - `app/(student)/_layout.tsx`
+  - `app/(student)/index.tsx`
+  - `docs/CURRENT_STATE.md`
+  - `docs/TODO.md`
+  - `docs/BUILD_JOURNAL.md`
+- Commands run:
+  - `rg --files app data components lib docs`
+  - `Get-Content -LiteralPath 'app\(student)\_layout.tsx'`
+  - `Get-Content -LiteralPath 'app\(student)\index.tsx'`
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npx expo config --type public`
+- Result:
+  - Student bottom tabs now prioritize only the core visible demo flows: home, rides, marketplace, chat, and profile.
+  - Secondary routes for Lost and Found, Food, Services, and Quick Links remain in the codebase but are hidden from the main student tab bar.
+  - Student home was simplified to a compact core-demo screen centered on rides, marketplace/document exchange, and recent chats.
+  - The home screen now avoids food, alerts, and quick-link sections to reduce demo surface area and lower the chance of distraction or runtime issues during a short exam/demo session.
+- Checks:
+  - First `npm run typecheck` failed because raw `->` in JSX caused a TSX parse error in `app/(student)/index.tsx`; this was fixed.
+  - Final `npm run typecheck` passed.
+  - Final `npm run lint` passed.
+  - `npx expo config --type public` passed.
+- Known issues:
+  - Secondary non-core features still exist in the repository; this change only hides them from the main student demo shell.
+  - Real Android device QA is still pending.
+- Next step: Rehearse only the core student flows and stop expanding scope until the exam/demo is over.

@@ -59,7 +59,7 @@ Phase 5: Final QA polish and Android release readiness implemented.
 
 ## In-Progress Features
 
-- None.
+- Student demo shell is being simplified to focus on core flows: rides, marketplace/document exchange, chat, and profile.
 
 ## Not-Started Features
 
@@ -149,4 +149,4 @@ Phase 5: Final QA polish and Android release readiness implemented.
 
 ## Next Recommended Task
 
-Run real Android device QA and then start EAS preview APK build after `eas login` or `EXPO_TOKEN` is available.
+Finish stabilizing the simplified student demo and rehearse the core flows before returning to Android release work.

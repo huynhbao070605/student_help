@@ -1,7 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import {
   AppBadge,
@@ -16,84 +14,51 @@ import {
   VerifiedBadge
 } from "@/components/ui";
 import { colors, spacing, typography } from "@/constants/theme";
-import {
-  demoAlerts,
-  demoChats,
-  demoFood,
-  demoProfile,
-  demoQuickLinks,
-  demoRides
-} from "@/data/studentDemo";
+import { demoChats, demoMarketplace, demoProfile, demoRides } from "@/data/studentDemo";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { supabase } from "@/lib/supabase/client";
 
 const actionLinks = [
-  { href: "/(student)/rides" as const, title: "Đi chung", subtitle: "Tìm bạn cùng tuyến", icon: "bicycle" as const, tone: "mint" as const },
-  { href: "/(student)/lost-found" as const, title: "Tìm đồ", subtitle: "Smart search không cần AI", icon: "search-circle" as const, tone: "butter" as const },
-  { href: "/(student)/marketplace" as const, title: "Chợ đồ học", subtitle: "Bán, đổi, mượn, cho mượn", icon: "storefront" as const, tone: "lavender" as const },
-  { href: "/(student)/chat" as const, title: "Tin nhắn", subtitle: "Chat và xin SĐT có đồng ý", icon: "chatbubbles" as const, tone: "sky" as const }
+  { href: "/(student)/rides" as const, title: "Di chung", subtitle: "Dat xe, tim ban cung tuyen", icon: "bicycle" as const, tone: "mint" as const },
+  { href: "/(student)/marketplace" as const, title: "Cho do hoc", subtitle: "Ban, doi, muon tai lieu", icon: "storefront" as const, tone: "lavender" as const },
+  { href: "/(student)/chat" as const, title: "Tin nhan", subtitle: "Trao doi nhanh va an toan", icon: "chatbubbles" as const, tone: "sky" as const }
 ];
-
-type AlertRow = { id: string; title: string; body: string; severity: string | null; area: string | null };
-type LinkRow = { id: string; title: string; description: string | null; url: string };
 
 export default function StudentHomeScreen() {
   const { profile } = useAuth();
-  const [alerts, setAlerts] = useState<AlertRow[]>(demoAlerts);
-  const [quickLinks, setQuickLinks] = useState<LinkRow[]>(demoQuickLinks);
-
-  useEffect(() => {
-    if (!supabase) return;
-
-    supabase
-      .from("community_alerts")
-      .select("id, title, body, severity, area")
-      .eq("is_active", true)
-      .order("created_at", { ascending: false })
-      .limit(3)
-      .then(({ data }) => {
-        if (data?.length) setAlerts(data);
-      });
-
-    supabase
-      .from("campus_quick_links")
-      .select("id, title, description, url")
-      .eq("is_active", true)
-      .order("sort_order")
-      .limit(3)
-      .then(({ data }) => {
-        if (data?.length) setQuickLinks(data);
-      });
-  }, []);
-
-  const activeProfile = useMemo(
-    () => ({
-      displayName: profile?.display_name ?? demoProfile.displayName,
-      verificationStatus: profile?.verification_status ?? demoProfile.verificationStatus,
-      reputationScore: profile?.reputation_score ?? demoProfile.reputationScore
-    }),
-    [profile]
-  );
+  const displayName = profile?.display_name ?? demoProfile.displayName;
+  const verificationStatus = profile?.verification_status ?? demoProfile.verificationStatus;
+  const reputationScore = profile?.reputation_score ?? demoProfile.reputationScore;
 
   return (
     <AppScreen>
       <AppHeader
-        eyebrow={`Xin chào, ${activeProfile.displayName}`}
-        title="Hôm nay cần giúp gì?"
-        subtitle="Đi chung, tìm đồ, trao đổi đồ học và chat an toàn quanh VNU-HCM."
-        right={<Avatar name={activeProfile.displayName} />}
+        eyebrow={`Xin chao, ${displayName}`}
+        title="Demo luong chinh"
+        subtitle="Tap trung vao di chung, mua ban va trao doi tai lieu de demo gon va on dinh hon."
+        right={<Avatar name={displayName} />}
       />
 
       <AppCard tone="peach">
         <View style={styles.profileRow}>
-          <VerifiedBadge status={activeProfile.verificationStatus === "approved" ? "verified" : activeProfile.verificationStatus === "pending" ? "pending" : "rejected"} />
-          <ReputationBadge score={activeProfile.reputationScore} />
+          <VerifiedBadge
+            status={
+              verificationStatus === "approved"
+                ? "verified"
+                : verificationStatus === "pending"
+                  ? "pending"
+                  : "rejected"
+            }
+          />
+          <ReputationBadge score={reputationScore} />
+          <AppBadge label="Khong GPS realtime" tone="mint" />
         </View>
-        <Text style={styles.cardTitle}>Không chia sẻ SĐT nếu chưa đồng ý</Text>
-        <Text style={styles.text}>Student Help không dùng GPS realtime, không thanh toán, không theo dõi giao hàng. Mọi thứ quan trọng đều xác nhận qua chat.</Text>
+        <Text style={styles.cardTitle}>Ban demo du thi</Text>
+        <Text style={styles.text}>
+          Ban nay co y an bot tinh nang phu. Muc tieu la demo nhanh cac luong chinh va giam loi phat sinh.
+        </Text>
       </AppCard>
 
-      <SectionHeader title="Lối tắt nhanh" />
+      <SectionHeader title="Loi tat nhanh" />
       <View style={styles.grid}>
         {actionLinks.map((action) => (
           <Link key={action.title} href={action.href} asChild>
@@ -102,72 +67,40 @@ export default function StudentHomeScreen() {
         ))}
       </View>
 
-      <SectionHeader title="Cảnh báo cộng đồng" action="3 mới" />
-      {alerts.slice(0, 2).map((alert, index) => (
-        <AppCard key={alert.id} tone={index === 0 ? "sky" : "butter"}>
-          <View style={styles.cardTop}>
-            <AppBadge label={alert.area ?? "VNU-HCM"} tone={alert.severity === "warning" ? "butter" : "sky"} />
-            <Text style={styles.cardTitle}>{alert.title}</Text>
-          </View>
-          <Text style={styles.text}>{alert.body}</Text>
-          <View style={styles.rowBetween}>
-            <AppButton title="Chi tiet" variant="secondary" />
-            <AppButton title="Da hieu" variant="ghost" onPress={() => setAlerts((current) => current.filter((item) => item.id !== alert.id))} />
-          </View>
-        </AppCard>
-      ))}
-
-      <SectionHeader title="Gần bạn có gì ngon?" action="Đặt qua chat" />
-      {demoFood.map((item) => (
-        <AppCard key={item.id} tone="mint">
-          <View style={styles.rowBetween}>
-            <View style={styles.flex}>
-              <Text style={styles.cardTitle}>{item.name}</Text>
-              <Text style={styles.text}>{item.area} · đi bộ khoảng {item.minutes} phút · {item.deal}</Text>
-            </View>
-            <Ionicons color={colors.peachDark} name="fast-food" size={24} />
-          </View>
-          <Link href="/(student)/food" asChild>
-            <AppButton title="Xem deal" variant="secondary" />
-          </Link>
-        </AppCard>
-      ))}
-
-      <SectionHeader title="Gợi ý đi chung" />
-      {demoRides.slice(0, 2).map((ride) => (
+      <SectionHeader title="Goi y di chung" action={`${demoRides.length} tuyen`} />
+      {demoRides.slice(0, 3).map((ride) => (
         <AppCard key={ride.id}>
-          <Text style={styles.cardTitle}>{ride.origin} → {ride.destination}</Text>
-          <Text style={styles.text}>{ride.transportType} · {ride.scheduleNote} · {ride.locationNote}</Text>
+          <Text style={styles.cardTitle}>{ride.origin} {"->"} {ride.destination}</Text>
+          <Text style={styles.text}>{ride.transportType} · {ride.scheduleNote}</Text>
+          <Text style={styles.text}>Diem hen: {ride.locationNote}</Text>
           <Link href="/(student)/rides" asChild>
-            <AppButton title="Xem tuyến" variant="ghost" />
+            <AppButton title="Mo danh sach di chung" variant="secondary" />
           </Link>
         </AppCard>
       ))}
 
-      <SectionHeader title="Tin nhắn mới" />
-      {demoChats.slice(0, 2).map((chat) => (
+      <SectionHeader title="Bai dang tai lieu" action={`${demoMarketplace.length} bai`} />
+      {demoMarketplace.slice(0, 3).map((post) => (
+        <AppCard key={post.id} tone={post.listingType === "free" ? "mint" : "default"}>
+          <Text style={styles.cardTitle}>{post.title}</Text>
+          <Text style={styles.text}>{post.category} · {post.area}</Text>
+          <Text style={styles.text}>{post.description}</Text>
+          <Link href="/(student)/marketplace" asChild>
+            <AppButton title="Mo cho do hoc" variant="secondary" />
+          </Link>
+        </AppCard>
+      ))}
+
+      <SectionHeader title="Tin nhan gan day" />
+      {demoChats.slice(0, 3).map((chat) => (
         <Link key={chat.id} href="/(student)/chat" asChild>
           <Pressable>
             <AppCard tone={chat.unread ? "lavender" : "default"}>
-              <View style={styles.rowBetween}>
-                <View style={styles.flex}>
-                  <Text style={styles.cardTitle}>{chat.participantName}</Text>
-                  <Text style={styles.text}>{chat.lastMessage}</Text>
-                </View>
-                {chat.unread ? <AppBadge label="Tin mới" tone="peach" /> : null}
-              </View>
+              <Text style={styles.cardTitle}>{chat.participantName}</Text>
+              <Text style={styles.text}>{chat.lastMessage}</Text>
             </AppCard>
           </Pressable>
         </Link>
-      ))}
-
-      <SectionHeader title="Campus Quick Links" />
-      {quickLinks.map((item) => (
-        <AppCard key={item.id} tone="butter">
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.text}>{item.description}</Text>
-          <AppButton title="Mở liên kết" variant="secondary" onPress={() => Linking.openURL(item.url)} />
-        </AppCard>
       ))}
     </AppScreen>
   );
@@ -183,19 +116,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.md
-  },
-  cardTop: {
-    gap: spacing.sm
-  },
-  rowBetween: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: spacing.md,
-    justifyContent: "space-between"
-  },
-  flex: {
-    flex: 1,
-    gap: spacing.xs
   },
   cardTitle: {
     color: colors.ink,
